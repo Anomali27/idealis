@@ -1,13 +1,13 @@
 <?php
-require_once '../app/core/Router.php';
+require_once '../app/Core/Router.php';
 
 use App\Core\Router;
 
 $router = new Router();
 
-//Register Routes
-$router->add('GET','/testing', 'TestingController', 'testing');
-
+$router->add('GET', '/', 'LandingController', 'index');
+$router->add('GET', '/student', 'StudentController', 'index');
+$router->add('GET', '/student/{id}', 'StudentController', 'show');
 
 $router->run();
 ?>
