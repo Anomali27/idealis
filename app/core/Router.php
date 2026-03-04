@@ -40,7 +40,7 @@ class Router
 
                 require_once __DIR__ . '/../controllers/' . $route['controller'] . '.php';
 
-                $controllerClass = 'App\\controllers\\' . $route['controller'];
+                $controllerClass = 'App\\Controllers\\' . $route['controller'];
                 $controller = new $controllerClass();
 
                 $function = $route['function'];
