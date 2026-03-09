@@ -2,28 +2,36 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Pontianak International College - Social Activity System</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <title>Pontianak International College</title>
+    
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Kameron:wght@400;700&family=Kanit:wght@400;600&family=Crimson+Pro:wght@400;500&display=swap" rel="stylesheet">
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom Styles -->
     <link rel="stylesheet" href="/css/style.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#043460',
+                        'primary-dark': '#032A47',
+                        'primary-light': '#0A4A80',
+                    },
+                    fontFamily: {
+                        poppins: ['Poppins', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
 </head>
-<body>
+<body class="font-poppins">
 
-<nav class="navbar">
-    <div class="container nav-container">
-        <div class="logo">
-            <span class="logo-main">PIC</span>
-            <span class="logo-sub">Social Activity</span>
-        </div>
-
-        <ul class="nav-links">
-            <li><a href="#">Home</a></li>
-            <li><a href="#">Activities</a></li>
-            <li><a href="#">About</a></li>
-            <li><a href="/auth/login" class="btn-gold">Login</a></li>
-        </ul>
-    </div>
-</nav>
