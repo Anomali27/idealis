@@ -50,17 +50,14 @@ $router->add('GET', '/', 'LandingController', 'index');
 $router->add('GET', '/home', 'LandingController', 'index');
 
 // =====================================================
-// AUTH ROUTES
+// AUTH ROUTES (Simple - No Forgot Password)
 // =====================================================
+$router->add('GET', '/auth', 'AuthController', 'auth');
 $router->add('GET', '/auth/login', 'AuthController', 'login');
 $router->add('POST', '/auth/authenticate', 'AuthController', 'authenticate');
 $router->add('GET', '/auth/logout', 'AuthController', 'logout');
 $router->add('GET', '/auth/register', 'AuthController', 'register');
 $router->add('POST', '/auth/store', 'AuthController', 'store');
-$router->add('GET', '/auth/forgot-password', 'AuthController', 'forgotPassword');
-$router->add('POST', '/auth/send-reset-link', 'AuthController', 'sendResetLink');
-$router->add('GET', '/auth/reset-password/{token}', 'AuthController', 'resetPassword');
-$router->add('POST', '/auth/update-password', 'AuthController', 'updatePassword');
 
 // =====================================================
 // STUDENT ROUTES

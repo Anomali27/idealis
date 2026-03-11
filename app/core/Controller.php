@@ -71,6 +71,13 @@ class Controller
             require $contentPath;
             $content = ob_get_clean();
 
+            // Check if layout is disabled
+            if ($this->layout === false) {
+                // No layout - just output the content directly
+                echo $content;
+                return;
+            }
+
             // Render with layout
             $layoutPath = dirname(__DIR__) . '/views/layouts/' . $this->layout . '.php';
 

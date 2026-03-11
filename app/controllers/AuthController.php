@@ -21,7 +21,26 @@ class AuthController extends Controller
     }
 
     /**
-     * Show login form
+     * Show combined login/register form (new modern style)
+     */
+    public function auth(): void
+    {
+        // If already logged in, redirect to dashboard
+        if (Session::isLoggedIn()) {
+            $this->redirectTo('/dashboard');
+        }
+
+        // Disable layout for auth page (no header/navbar/footer)
+        $this->layout = false;
+
+        $this->data['title'] = 'Login / Register - PIC Social Activity';
+        $this->data['csrf_token'] = Session::getCsrfToken();
+
+        $this->render('auth/auth');
+    }
+
+    /**
+     * Show login form (redirect to combined page)
      */
     public function login(): void
     {
@@ -30,10 +49,32 @@ class AuthController extends Controller
             $this->redirectTo('/dashboard');
         }
 
+        // Disable layout for auth page (no header/navbar/footer)
+        $this->layout = false;
+
         $this->data['title'] = 'Login - PIC Social Activity';
         $this->data['csrf_token'] = Session::getCsrfToken();
 
-        $this->render('auth/login');
+        $this->render('auth/auth');
+    }
+
+    /**
+     * Show registration form (redirect to combined page)
+     */
+    public function register(): void
+    {
+        // If already logged in, redirect to dashboard
+        if (Session::isLoggedIn()) {
+            $this->redirectTo('/dashboard');
+        }
+
+        // Disable layout for auth page (no header/navbar/footer)
+        $this->layout = false;
+
+        $this->data['title'] = 'Register - PIC Social Activity';
+        $this->data['csrf_token'] = Session::getCsrfToken();
+
+        $this->render('auth/auth');
     }
 
     /**
@@ -45,7 +86,7 @@ class AuthController extends Controller
         $csrfToken = $_POST['csrf_token'] ?? '';
         if (!Session::validateCsrfToken($csrfToken)) {
             Session::setFlash('error', 'Invalid security token. Please try again.');
-            $this->redirectTo('/auth/login');
+            $this->redirectTo('/auth/auth?mode=login');
             return;
         }
 
@@ -67,7 +108,7 @@ class AuthController extends Controller
 
         if (!empty($errors)) {
             Session::setFlash('error', implode('<br>', $errors));
-            $this->redirectTo('/auth/login');
+            $this->redirectTo('/auth/auth?mode=login');
             return;
         }
 
@@ -76,7 +117,7 @@ class AuthController extends Controller
 
         if ($user === null) {
             Session::setFlash('error', 'Invalid email or password.');
-            $this->redirectTo('/auth/login');
+            $this->redirectTo('/auth/auth?mode=login');
             return;
         }
 
@@ -110,23 +151,6 @@ class AuthController extends Controller
     }
 
     /**
-     * Show registration form
-     */
-    public function register(): void
-    {
-        // If already logged in, redirect to dashboard
-        if (Session::isLoggedIn()) {
-            $this->redirectTo('/dashboard');
-        }
-
-        $this->data['title'] = 'Register - PIC Social Activity';
-        $this->data['csrf_token'] = Session::getCsrfToken();
-        $this->data['roles'] = User::getRoles();
-
-        $this->render('auth/register');
-    }
-
-    /**
      * Process registration
      */
     public function store(): void
@@ -135,7 +159,7 @@ class AuthController extends Controller
         $csrfToken = $_POST['csrf_token'] ?? '';
         if (!Session::validateCsrfToken($csrfToken)) {
             Session::setFlash('error', 'Invalid security token. Please try again.');
-            $this->redirectTo('/auth/register');
+            $this->redirectTo('/auth/auth?mode=register');
             return;
         }
 
@@ -192,7 +216,7 @@ class AuthController extends Controller
 
         if (!empty($errors)) {
             Session::setFlash('error', implode('<br>', $errors));
-            $this->redirectTo('/auth/register');
+            $this->redirectTo('/auth/auth?mode=register');
             return;
         }
 
@@ -214,116 +238,15 @@ class AuthController extends Controller
 
             if ($userId > 0) {
                 Session::setFlash('success', 'Registration successful! Please login.');
-                $this->redirectTo('/auth/login');
+                $this->redirectTo('/auth/auth?mode=login');
             } else {
                 Session::setFlash('error', 'Registration failed. Please try again.');
-                $this->redirectTo('/auth/register');
+                $this->redirectTo('/auth/auth?mode=register');
             }
         } catch (\Exception $e) {
             Session::setFlash('error', 'An error occurred: ' . $e->getMessage());
-            $this->redirectTo('/auth/register');
+            $this->redirectTo('/auth/auth?mode=register');
         }
-    }
-
-    /**
-     * Show forgot password form
-     */
-    public function forgotPassword(): void
-    {
-        $this->data['title'] = 'Forgot Password - PIC Social Activity';
-        $this->data['csrf_token'] = Session::getCsrfToken();
-
-        $this->render('auth/forgot_password');
-    }
-
-    /**
-     * Process forgot password request
-     */
-    public function sendResetLink(): void
-    {
-        // Validate CSRF token
-        $csrfToken = $_POST['csrf_token'] ?? '';
-        if (!Session::validateCsrfToken($csrfToken)) {
-            Session::setFlash('error', 'Invalid security token.');
-            $this->redirectTo('/auth/forgot-password');
-            return;
-        }
-
-        $email = trim($_POST['email'] ?? '');
-
-        if (empty($email)) {
-            Session::setFlash('error', 'Email is required.');
-            $this->redirectTo('/auth/forgot-password');
-            return;
-        }
-
-        // Check if email exists
-        $user = $this->userModel->getByEmail($email);
-
-        if ($user) {
-            // In production, send email with reset link
-            // For now, just show success message
-            Session::setFlash('success', 'If this email exists, a reset link has been sent.');
-        } else {
-            // Don't reveal if email exists or not
-            Session::setFlash('success', 'If this email exists, a reset link has been sent.');
-        }
-
-        $this->redirectTo('/auth/forgot-password');
-    }
-
-    /**
-     * Show reset password form
-     */
-    public function resetPassword(string $token): void
-    {
-        // In production, validate token from database
-        $this->data['title'] = 'Reset Password - PIC Social Activity';
-        $this->data['csrf_token'] = Session::getCsrfToken();
-        $this->data['token'] = $token;
-
-        $this->render('auth/reset_password');
-    }
-
-    /**
-     * Process reset password
-     */
-    public function updatePassword(): void
-    {
-        // Validate CSRF token
-        $csrfToken = $_POST['csrf_token'] ?? '';
-        if (!Session::validateCsrfToken($csrfToken)) {
-            Session::setFlash('error', 'Invalid security token.');
-            $this->redirectTo('/auth/forgot-password');
-            return;
-        }
-
-        $password = $_POST['password'] ?? '';
-        $confirmPassword = $_POST['confirm_password'] ?? '';
-        $token = $_POST['token'] ?? '';
-
-        $errors = [];
-
-        if (empty($password)) {
-            $errors[] = 'New password is required.';
-        } elseif (strlen($password) < 6) {
-            $errors[] = 'Password must be at least 6 characters.';
-        }
-
-        if ($password !== $confirmPassword) {
-            $errors[] = 'Passwords do not match.';
-        }
-
-        if (!empty($errors)) {
-            Session::setFlash('error', implode('<br>', $errors));
-            $this->redirectTo('/auth/reset-password/' . $token);
-            return;
-        }
-
-        // In production, validate token and get user ID
-        // For now, show success
-        Session::setFlash('success', 'Password has been reset successfully.');
-        $this->redirectTo('/auth/login');
     }
 
     /**
