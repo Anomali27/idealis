@@ -1,1 +1,11 @@
-# Font Update Complete: Crimson Pro applied to header/navbar/footer via Tailwind config update. Navbar buttons font-semibold, footer headings font-semibold. Consistent across landing/events/pages. Footer logo/navbar active previously fixed. Reload/clear cache to see Crimson Pro serif style everywhere.
+# Auth Cleanup Plan
+
+**✅ Complete**
+- [x] Identify login/signup files (AuthController.php + auth.php)
+- [x] Delete unused login_new.php
+- [x] Fix double slash URLs
+- [x] Fix 404 after login redirects
+- [x] Clean navbar login link → `/auth`
+- [x] Fix all AuthController redirects → `/auth?mode=...`
+
+**Current Status:** Login/register working perfectly. Toggle buttons functional. Ready to use.
