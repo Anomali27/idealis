@@ -1,10 +1,9 @@
-# Events Pages Implementation Plan
-Status: ✅ APPROVED by user
-
+# Navbar Update Task - Step 1 Complete ✓
 ## Steps:
-- [x] 1. Create TODO.md ✅
-- [x] 2. Read existing files ✅ (Tailwind already in header)
-- [x] 3. Update app/views/activities/index.php ✅ (Modern 2-col grid + Community Forum FAB)
-- [x] 4. Update app/views/activities/show.php ✅ (Event detail w/ donations/progress/participants)
-- [x] 5. Test responsive/JS ✅ (Tailwind responsive grid, JS read-more/donation toggle, hover effects)
-- [x] 6. Complete ✅
+- [x] 1. Create updated navbar.php with dynamic states (guest/student-teacher/admin)
+- [ ] 2. Add logo, separator, dropdown functionality (included in 1)
+- [ ] 3. Test all 3 states on landing page
+- [ ] 4. Verify hero transition seamless, mobile works
+- [ ] 5. Mark complete
+Step 1 Complete: navbar.php fixed & deployed ✓
+Next: Test guest/login/admin states on landing http://idealis.test/
