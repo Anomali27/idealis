@@ -30,9 +30,19 @@
                     $links[] = '/activities';
                 }
                 
+                $currentPath = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
+                $activeItem = '';
+                for($i = 0; $i < count($menuItems); $i++) {
+                    $linkPath = trim($links[$i], '/');
+                    if ($currentPath === $linkPath) {
+                        $activeItem = $menuItems[$i];
+                        break;
+                    }
+                }
+                
                 foreach($menuItems as $index => $item): 
                 ?>
-                    <a href="<?php echo htmlspecialchars($links[$index]); ?>" class="px-4 md:px-5 py-2 rounded-full font-medium transition-all duration-300 <?php echo ($item === 'Home') ? 'bg-primary-dark/90 text-white hover:bg-primary-dark' : 'text-white/90 hover:bg-white/20 hover:text-white'; ?>">
+                    <a href="<?php echo htmlspecialchars($links[$index]); ?>" class="px-4 md:px-5 py-2 rounded-full font-medium transition-all duration-300 <?php echo ($item === $activeItem) ? 'bg-primary-dark/90 text-white hover:bg-primary-dark' : 'text-white/90 hover:bg-white/20 hover:text-white'; ?>">
                         <?php echo htmlspecialchars($item); ?>
                     </a>
                 <?php endforeach; ?>
@@ -82,12 +92,12 @@
     <!-- Mobile Menu (Simplified Dynamic) -->
     <div id="mobile-menu" class="hidden md:hidden bg-primary-dark/95 backdrop-blur-sm">
         <div class="px-2 pt-2 pb-3 space-y-1">
-            <a href="/" class="block px-3 py-2 rounded-md bg-primary-light text-white font-medium">Home</a>
-            <a href="/activities" class="block px-3 py-2 rounded-md text-white hover:bg-white/10 font-medium">Events</a>
+<a href="/" class="block px-3 py-2 rounded-md <?php echo ($currentPath === '') ? 'bg-primary-light text-white' : 'text-white hover:bg-white/10'; ?> font-medium">Home</a>
+<a href="/activities" class="block px-3 py-2 rounded-md <?php echo ($currentPath === 'activities') ? 'bg-primary-light text-white' : 'text-white hover:bg-white/10'; ?> font-medium">Events</a>
             <?php if (Session::isLoggedIn()): ?>
-                <a href="/volunteers/history" class="block px-3 py-2 rounded-md text-white hover:bg-white/10 font-medium">History</a>
+<a href="/volunteers/history" class="block px-3 py-2 rounded-md <?php echo ($currentPath === 'volunteers/history') ? 'bg-primary-light text-white' : 'text-white hover:bg-white/10'; ?> font-medium">History</a>
                 <?php if (Session::getUserRole() === 'admin'): ?>
-                    <a href="/admin/dashboard" class="block px-3 py-2 rounded-md text-white hover:bg-white/10 font-medium">Dashboard</a>
+<a href="/admin/dashboard" class="block px-3 py-2 rounded-md <?php echo ($currentPath === 'admin/dashboard') ? 'bg-primary-light text-white' : 'text-white hover:bg-white/10'; ?> font-medium">Dashboard</a>
                 <?php endif; ?>
                 <a href="/profile" class="block px-3 py-2 rounded-md text-white hover:bg-white/10 font-medium"><?php echo htmlspecialchars($userName ?? 'Profile'); ?></a>
                 <a href="/logout" class="block px-3 py-2 rounded-md text-white hover:bg-white/10 font-medium">Logout</a>

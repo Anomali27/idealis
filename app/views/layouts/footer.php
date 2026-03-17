@@ -4,18 +4,9 @@
     <div class="max-w-7xl mx-auto">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16 mb-12">
             <!-- Brand -->
-            <div class="space-y-4">
-                <div class="flex items-center space-x-3">
-                    <img src="/assets/images/logo_white.png" alt="PIC Logo" class="w-12 h-12 rounded-xl shadow-2xl">
-                    <div>
-                        <h3 class="text-2xl font-bold">PIC Social</h3>
-                        <p class="text-primary-light text-sm opacity-90">Pontianak International College</p>
-                    </div>
-                </div>
-                <p class="text-gray-300 leading-relaxed max-w-md">
-                    Empowering students through social impact and community engagement.
-                </p>
-            </div>
+                <a href="/" class="flex items-center">
+                    <img src="/assets/images/logo_white.png" alt="PIC Logo" class="h-30 md:h-36 w-auto object-contain">
+                </a>
 
             <!-- Quick Links -->
             <div>
@@ -26,7 +17,7 @@
                     Quick Links
                 </h4>
                 <ul class="space-y-3">
-                    <li><a href="/home" class="group flex items-center gap-3 text-gray-300 hover:text-white hover:translate-x-2 transition-all duration-300">
+                    <li><a href="/" class="group flex items-center gap-3 text-gray-300 hover:text-white hover:translate-x-2 transition-all duration-300">
                         <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 0 0 1 1h3m10-11l2 2m-2-2v10a1 1 0 0 1-1 1h-3m-6 0a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1m0 0V9a1 1 0 0 0 1-1h2a1 1 0 0 0 1 1v9a1 1 0 0 1-1 1h-2a1 1 0 0 0-1 1m0 0V9a1 1 0 0 1-1-1H8a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1z"/>
                         </svg>
