@@ -1,472 +1,254 @@
 <?php
-// Include header
+// Event Detail Page - Modern Tailwind w/ Donations
 require_once dirname(__DIR__) . '/layouts/header.php';
-
 use App\Core\Session;
 
 $activity = $data['activity'] ?? [];
 $isRegistered = $data['isRegistered'] ?? false;
-$isLoggedIn = $data['isLoggedIn'] ?? false;
-$userRole = \App\Core\Session::getUserRole();
-
-$error = \App\Core\Session::getFlash('error');
-$success = \App\Core\Session::getFlash('success');
+$isLoggedIn = Session::isLoggedIn();
+$userRole = Session::getUserRole();
 ?>
 
-<!-- Activity Detail Page -->
-<div class="activity-detail-page">
-    <!-- Hero Section -->
-    <div class="activity-hero">
-        <div class="container">
-            <a href="/activities" class="back-link">← Back to Activities</a>
-            <span class="activity-status status-<?= $activity['status'] ?>">
-                <?= ucfirst($activity['status']) ?>
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-slate-100 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-6xl mx-auto">
+        <!-- Back + Title -->
+        <div class="flex items-start justify-between mb-12">
+            <a href="/activities" class="inline-flex items-center gap-2 text-gray-600 hover:text-primary font-medium transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+                Back to Events
+            </a>
+            <span class="px-4 py-2 bg-white/80 backdrop-blur-sm rounded-2xl text-sm font-semibold text-gray-800 shadow-md border px-6">
+                <?= ucfirst($activity['status'] ?? 'Draft') ?>
             </span>
-            <h1><?= htmlspecialchars($activity['title']) ?></h1>
-            <p class="activity-organizer">Organized by <?= htmlspecialchars($activity['creator_name'] ?? 'PIC') ?></p>
         </div>
-    </div>
 
-    <div class="container">
-        <!-- Alerts -->
-        <?php if ($error): ?>
-            <div class="alert alert-error"><?= htmlspecialchars($error) ?></div>
-        <?php endif; ?>
-        
-        <?php if ($success): ?>
-            <div class="alert alert-success"><?= htmlspecialchars($success) ?></div>
-        <?php endif; ?>
-
-        <div class="activity-detail-grid">
+        <div class="grid lg:grid-cols-3 gap-8">
             <!-- Main Content -->
-            <div class="activity-main">
-                <!-- Cover Image -->
-                <div class="activity-cover">
-                    <?php if ($activity['cover_image']): ?>
-                        <img src="<?= htmlspecialchars($activity['cover_image']) ?>" alt="<?= htmlspecialchars($activity['title']) ?>">
-                    <?php else: ?>
-                        <div class="cover-placeholder">
-                            <span>PIC</span>
-                        </div>
-                    <?php endif; ?>
+            <div class="lg:col-span-2 space-y-8">
+                <!-- Event Title -->
+                <div>
+                    <h1 class="text-3xl lg:text-4xl font-bold text-gray-900 leading-tight mb-4">
+                        <?= htmlspecialchars($activity['title'] ?? 'Event Title') ?>
+                    </h1>
+                    <p class="text-xl text-gray-600">Organized by PIC Committee</p>
                 </div>
 
-                <!-- Description -->
-                <div class="activity-section">
-                    <h2>About This Activity</h2>
-                    <div class="activity-description">
-                        <?= nl2br(htmlspecialchars($activity['description'] ?? 'No description available.')) ?>
+                <!-- Banner Image -->
+                <div class="bg-gradient-to-r from-gray-100 to-slate-100 rounded-3xl overflow-hidden shadow-xl">
+                    <img src="<?= htmlspecialchars($activity['cover_image'] ?? '/assets/images/school_view.png') ?>" 
+                         alt="<?= htmlspecialchars($activity['title']) ?>"
+                         class="w-full h-96 object-cover">
+                </div>
+
+                <!-- Description Section -->
+                <div class="bg-white rounded-3xl p-8 shadow-xl">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
+                        <svg class="w-8 h-8 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0zm-7-4a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM9 9a1 1 0 0 0-1 1v3a1 1 0 1 0 2 0v-3a1 1 0 0 0-1-1z"/>
+                        </svg>
+                        Description
+                    </h2>
+                    <div class="space-y-4">
+                        <div id="description-short" class="text-lg text-gray-700 leading-relaxed line-clamp-3 prose max-w-none">
+                            <?= htmlspecialchars(substr($activity['description'] ?? 'Pontianak International College students join local community for mangrove restoration project. Participants will plant mangrove trees along the coastal area to support environmental conservation efforts.', 0, 200)) ?>...
+                        </div>
+                        <div id="description-full" class="text-lg text-gray-700 leading-relaxed prose max-w-none hidden">
+                            <?= nl2br(htmlspecialchars($activity['description'] ?? 'Pontianak International College students join local community for mangrove restoration project. Participants will plant mangrove trees along the coastal area to support environmental conservation efforts. This activity aims to raise environmental awareness among students while contributing to local ecosystem restoration. No prior experience required - training provided on site.')) ?>
+                        </div>
+                        <button id="read-more" class="text-primary font-semibold hover:text-primary-dark transition-colors flex items-center gap-2">
+                            See more <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        </button>
+                        <button id="read-less" class="text-primary font-semibold hover:text-primary-dark transition-colors flex items-center gap-2 hidden">
+                            See less <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg>
+                        </button>
                     </div>
                 </div>
 
-                <!-- Requirements -->
-                <?php if ($activity['requirements']): ?>
-                    <div class="activity-section">
-                        <h2>Requirements</h2>
-                        <div class="activity-requirements">
-                            <?= nl2br(htmlspecialchars($activity['requirements'])) ?>
-                        </div>
+                <!-- Participants Table -->
+                <div class="bg-white rounded-3xl p-8 shadow-xl overflow-hidden">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Participants</h2>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead class="bg-gradient-to-r from-primary/5 to-primary-dark/5">
+                                <tr>
+                                    <th class="px-6 py-4 text-left font-semibold text-gray-900">#</th>
+                                    <th class="px-6 py-4 text-left font-semibold text-gray-900">Name</th>
+                                    <th class="px-6 py-4 text-left font-semibold text-gray-900">Affiliation</th>
+                                    <th class="px-6 py-4 text-left font-semibold text-gray-900">Role</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr class="hover:bg-gray-50 transition-colors">
+                                    <td class="px-6 py-4 font-medium text-gray-900">1</td>
+                                    <td class="px-6 py-4">Dimas Sukin</td>
+                                    <td class="px-6 py-4 text-gray-600">XII-B</td>
+                                    <td class="px-6 py-4"><span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-medium">Organizer</span></td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 transition-colors">
+                                    <td class="px-6 py-4 font-medium text-gray-900">2</td>
+                                    <td class="px-6 py-4">Wong Fei Hung</td>
+                                    <td class="px-6 py-4 text-gray-600">XI-D</td>
+                                    <td class="px-6 py-4"><span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-medium">Staff</span></td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 transition-colors">
+                                    <td class="px-6 py-4 font-medium text-gray-900">3</td>
+                                    <td class="px-6 py-4">Daniel Kim</td>
+                                    <td class="px-6 py-4 text-gray-600">X-E</td>
+                                    <td class="px-6 py-4"><span class="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-xs font-medium">Member</span></td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 transition-colors">
+                                    <td class="px-6 py-4 font-medium text-gray-900">4</td>
+                                    <td class="px-6 py-4">Michelle Zhang</td>
+                                    <td class="px-6 py-4 text-gray-600">Teacher</td>
+                                    <td class="px-6 py-4"><span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-xs font-medium">Staff</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                <?php endif; ?>
+                </div>
             </div>
 
-            <!-- Sidebar -->
-            <div class="activity-sidebar">
-                <!-- Event Info Card -->
-                <div class="info-card">
-                    <h3>Event Details</h3>
-                    
-                    <div class="info-item">
-                        <div class="info-icon">
-                            <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
-                                <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
-                            </svg>
-                        </div>
-                        <div class="info-content">
-                            <span class="info-label">Date</span>
-                            <span class="info-value"><?= date('l, d F Y', strtotime($activity['activity_date'])) ?></span>
-                        </div>
+            <!-- Sidebar - Donations -->
+            <div class="space-y-6 lg:sticky lg:top-12 lg:h-screen lg:overflow-y-auto">
+                <!-- Donate Card -->
+                <div class="bg-white rounded-3xl p-8 shadow-xl border border-gray-100">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-8 flex items-center gap-3">
+                        <svg class="w-9 h-9 bg-gradient-to-br from-green-400 to-emerald-500 text-white rounded-2xl p-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 0 1-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.363.242.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 0 1-.567.267zM8 5.5a1.5 1.5 0 1 1 3 0V6h4v2H8V5.5zM8.5 10a1.5 1.5 0 0 1 1.5-1.5h5V7h-6.5A1.5 1.5 0 0 1 8 5.5V7h1.5V8.5H9.5a1.5 1.5 0 0 1-1.5 1.5H8v1.5h1.5V12H8v1.5h6.5A1.5 1.5 0 0 1 16 13.5v-3a1.5 1.5 0 0 1-1.5-1.5h-5V10h5v1.5H14.5A1.5 1.5 0 0 1 13 13v3a1.5 1.5 0 0 1-1.5 1.5H8V13h1.5V11.5z"/>
+                        </svg>
+                        Donate
+                    </h3>
+
+                    <!-- Donation Amounts -->
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mb-6">
+                        <button class="donation-btn" data-amount="5000">Rp 5.000</button>
+                        <button class="donation-btn" data-amount="10000">Rp 10.000</button>
+                        <button class="donation-btn" data-amount="20000">Rp 20.000</button>
+                        <button class="donation-btn" data-amount="50000">Rp 50.000</button>
+                        <button class="donation-btn" data-amount="100000">Rp 100.000</button>
+                        <button class="donation-btn" data-amount="200000">Rp 200.000</button>
                     </div>
 
-                    <div class="info-item">
-                        <div class="info-icon">
-                            <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
-                                <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
-                                <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
-                            </svg>
-                        </div>
-                        <div class="info-content">
-                            <span class="info-label">Time</span>
-                            <span class="info-value"><?= date('H:i', strtotime($activity['activity_time'])) ?> WIB</span>
+                    <!-- Message -->
+                    <textarea placeholder="Write your message..." 
+                              class="w-full p-4 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-primary focus:border-transparent resize-vertical mb-4" 
+                              rows="3"></textarea>
+
+                    <button class="w-full bg-gradient-to-r from-emerald-500 to-green-600 text-white py-4 px-6 rounded-2xl font-bold hover:from-emerald-600 hover:to-green-700 shadow-xl hover:shadow-2xl transition-all duration-300 text-lg">
+                        Send Donation
+                    </button>
+                </div>
+
+                <!-- Total Donation Card -->
+                <div class="bg-white rounded-3xl p-6 shadow-xl border border-gray-100">
+                    <h4 class="text-lg font-bold text-gray-900 mb-4">Total Donation</h4>
+                    <div class="mb-4">
+                        <div class="text-2xl font-bold text-green-600 mb-2">Rp 250.000</div>
+                        <div class="text-sm text-gray-600 mb-3">/ Rp 1.000.000</div>
+                        <div class="w-full bg-gray-200 rounded-full h-3">
+                            <div class="bg-gradient-to-r from-emerald-500 to-green-600 h-3 rounded-full" style="width: 25%"></div>
                         </div>
                     </div>
+                    <p class="text-xs text-gray-500">25% of goal reached</p>
+                </div>
 
-                    <div class="info-item">
-                        <div class="info-icon">
-                            <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
-                                <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
+                <!-- Top Donators -->
+                <div class="bg-white rounded-3xl p-6 shadow-xl border border-gray-100">
+                    <h4 class="text-lg font-bold text-gray-900 mb-6">Top Donators</h4>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between group cursor-pointer hover:bg-gray-50 p-3 rounded-xl transition-all" onclick="alert('Michelle: Thank you for the mangrove restoration! 🌱')">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-gradient-to-r from-purple-400 to-pink-500 rounded-2xl flex items-center justify-center text-white font-semibold">MZ</div>
+                                <div>
+                                    <div class="font-semibold text-gray-900">Michelle Zhang</div>
+                                    <div class="text-sm text-gray-500">Rp 100.000</div>
+                                </div>
+                            </div>
+                            <svg class="w-5 h-5 text-gray-400 group-hover:text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 0 1-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 4.03 9 8z"/>
                             </svg>
                         </div>
-                        <div class="info-content">
-                            <span class="info-label">Location</span>
-                            <span class="info-value"><?= htmlspecialchars($activity['location']) ?></span>
-                        </div>
-                    </div>
-
-                    <div class="info-item">
-                        <div class="info-icon">
-                            <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
-                                <path d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1h8zm-7.978-1A.261.261 0 0 1 7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002a.274.274 0 0 1-.014.002H7.022z"/>
+                        <div class="flex items-center justify-between group cursor-pointer hover:bg-gray-50 p-3 rounded-xl transition-all" onclick="alert('Leon: Great cause! Keep it up! 👍')">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-gradient-to-r from-blue-400 to-blue-600 rounded-2xl flex items-center justify-center text-white font-semibold">LK</div>
+                                <div>
+                                    <div class="font-semibold text-gray-900">Leon Kuniardi</div>
+                                    <div class="text-sm text-gray-500">Rp 50.000</div>
+                                </div>
+                            </div>
+                            <svg class="w-5 h-5 text-gray-400 group-hover:text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 0 1-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 4.03 9 8z"/>
                             </svg>
                         </div>
-                        <div class="info-content">
-                            <span class="info-label">Volunteers</span>
-                            <span class="info-value">
-                                <?= $activity['volunteer_count'] ?? 0 ?> / <?= $activity['max_volunteers'] ?: '∞' ?> registered
-                            </span>
+                        <div class="flex items-center justify-between group cursor-pointer hover:bg-gray-50 p-3 rounded-xl transition-all" onclick="alert('Evan: Supporting student initiatives! 🎉')">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-gradient-to-r from-orange-400 to-yellow-500 rounded-2xl flex items-center justify-center text-white font-semibold">EB</div>
+                                <div>
+                                    <div class="font-semibold text-gray-900">Evan Burger</div>
+                                    <div class="text-sm text-gray-500">Rp 40.000</div>
+                                </div>
+                            </div>
+                            <svg class="w-5 h-5 text-gray-400 group-hover:text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 0 1-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 4.03 9 8z"/>
+                            </svg>
                         </div>
                     </div>
                 </div>
 
-                <!-- Action Card -->
-                <div class="action-card">
-                    <?php if ($activity['status'] === 'cancelled'): ?>
-                        <div class="action-message error">
-                            This activity has been cancelled.
-                        </div>
-                    <?php elseif ($activity['status'] === 'completed'): ?>
-                        <div class="action-message">
-                            This activity has been completed.
-                        </div>
-                    <?php elseif ($isRegistered): ?>
-                        <div class="action-message success">
-                            ✓ You are registered as a volunteer!
-                        </div>
-                        <a href="/volunteers/history" class="btn btn-outline">View My Activities</a>
-                    <?php elseif (!$isLoggedIn): ?>
-                        <p class="login-prompt">Please login to register as a volunteer.</p>
-                        <a href="/auth/login" class="btn btn-primary btn-full">Login to Register</a>
-                    <?php else: ?>
-                        <a href="/volunteers/register/<?= $activity['id'] ?>" class="btn btn-primary btn-full">Register as Volunteer</a>
-                    <?php endif; ?>
+                <!-- Participate Button -->
+                <div class="bg-gradient-to-r from-emerald-500 to-green-600 text-white p-6 rounded-3xl shadow-2xl hover:shadow-3xl hover:scale-[1.02] transition-all duration-300 cursor-pointer text-center font-bold text-xl">
+                    <a href="/participate" class="block">Participate Now</a>
                 </div>
-
-                <!-- Admin Actions -->
-                <?php if (in_array($userRole, ['admin', 'committee'])): ?>
-                    <div class="admin-card">
-                        <h3>Admin Actions</h3>
-                        <div class="admin-buttons">
-                            <a href="/activities/<?= $activity['id'] ?>/edit" class="btn btn-secondary">Edit Activity</a>
-                            <?php if ($userRole === 'admin'): ?>
-                                <form action="/activities/<?= $activity['id'] ?>/delete" method="POST" onsubmit="return confirm('Are you sure you want to delete this activity?')">
-                                    <button type="submit" class="btn btn-danger">Delete Activity</button>
-                                </form>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                <?php endif; ?>
             </div>
         </div>
     </div>
 </div>
 
-<style>
-.activity-detail-page {
-    background: #F5F7FA;
-    min-height: 100vh;
-}
+<script>
+    // Read More/Less Toggle
+    const readMoreBtn = document.getElementById('read-more');
+    const readLessBtn = document.getElementById('read-less');
+    const shortDesc = document.getElementById('description-short');
+    const fullDesc = document.getElementById('description-full');
 
-.activity-hero {
-    background: linear-gradient(135deg, #043460 0%, #0A4A80 100%);
-    padding: 40px 0 60px;
-    color: white;
-}
+    readMoreBtn?.addEventListener('click', () => {
+        shortDesc.classList.add('hidden');
+        fullDesc.classList.remove('hidden');
+        readMoreBtn.classList.add('hidden');
+        readLessBtn.classList.remove('hidden');
+    });
 
-.activity-hero .container {
-    position: relative;
-}
+    readLessBtn?.addEventListener('click', () => {
+        shortDesc.classList.remove('hidden');
+        fullDesc.classList.add('hidden');
+        readMoreBtn.classList.remove('hidden');
+        readLessBtn.classList.add('hidden');
+    });
 
-.back-link {
-    color: rgba(255,255,255,0.8);
-    text-decoration: none;
-    font-family: 'Kanit', sans-serif;
-    font-size: 14px;
-    transition: color 0.3s;
-}
+    // Donation Buttons
+    document.querySelectorAll('.donation-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.donation-btn').forEach(b => b.classList.remove('bg-primary', 'text-white', 'shadow-md', 'ring-2', 'ring-primary'));
+            this.classList.add('bg-primary', 'text-white', 'shadow-md', 'ring-2', 'ring-primary');
+        });
+    });
+</script>
 
-.back-link:hover {
-    color: white;
-}
-
-.activity-hero .activity-status {
-    position: absolute;
-    top: 0;
-    right: 0;
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: 600;
-    font-family: 'Kanit', sans-serif;
-    text-transform: uppercase;
-}
-
-.activity-hero h1 {
-    font-family: 'Kameron', serif;
-    font-size: 36px;
-    margin: 20px 0 10px;
-}
-
-.activity-organizer {
-    font-family: 'Crimson Pro', serif;
-    font-size: 16px;
-    opacity: 0.9;
-}
-
-.activity-detail-grid {
-    display: grid;
-    grid-template-columns: 1fr 350px;
-    gap: 30px;
-    margin-top: -30px;
-}
-
-.activity-main {
-    background: white;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-}
-
-.activity-cover {
-    height: 300px;
-    background: #f0f0f0;
-}
-
-.activity-cover img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.cover-placeholder {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, #043460 0%, #0A4A80 100%);
-    color: white;
-    font-family: 'Kameron', serif;
-    font-size: 48px;
-    font-weight: bold;
-}
-
-.activity-section {
-    padding: 30px;
-    border-bottom: 1px solid #E2E8F0;
-}
-
-.activity-section:last-child {
-    border-bottom: none;
-}
-
-.activity-section h2 {
-    font-family: 'Kanit', sans-serif;
-    font-size: 20px;
-    color: #043460;
-    margin-bottom: 15px;
-}
-
-.activity-description,
-.activity-requirements {
-    font-family: 'Crimson Pro', serif;
-    font-size: 16px;
-    line-height: 1.8;
-    color: #1E293B;
-}
-
-.activity-sidebar {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.info-card,
-.action-card,
-.admin-card {
-    background: white;
-    border-radius: 12px;
-    padding: 25px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-}
-
-.info-card h3,
-.admin-card h3 {
-    font-family: 'Kanit', sans-serif;
-    font-size: 18px;
-    color: #043460;
-    margin-bottom: 20px;
-}
-
-.info-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 15px;
-    margin-bottom: 20px;
-}
-
-.info-item:last-child {
-    margin-bottom: 0;
-}
-
-.info-icon {
-    width: 40px;
-    height: 40px;
-    background: #F5F7FA;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #CA9F37;
-}
-
-.info-content {
-    display: flex;
-    flex-direction: column;
-}
-
-.info-label {
-    font-family: 'Kanit', sans-serif;
-    font-size: 12px;
-    color: #64748B;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.info-value {
-    font-family: 'Crimson Pro', serif;
-    font-size: 15px;
-    color: #1E293B;
-    margin-top: 2px;
-}
-
-.action-card {
-    text-align: center;
-}
-
-.action-message {
-    font-family: 'Crimson Pro', serif;
-    font-size: 16px;
-    color: #043460;
-    margin-bottom: 20px;
-}
-
-.action-message.success {
-    color: #10B981;
-}
-
-.action-message.error {
-    color: #EF4444;
-}
-
-.login-prompt {
-    font-family: 'Crimson Pro', serif;
-    font-size: 14px;
-    color: #64748B;
-    margin-bottom: 15px;
-}
-
-.btn {
-    display: inline-block;
-    padding: 12px 24px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-family: 'Kanit', sans-serif;
-    font-size: 14px;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    border: none;
-    width: 100%;
-}
-
-.btn-primary {
-    background: #CA9F37;
-    color: white;
-}
-
-.btn-primary:hover {
-    background: #D8B25A;
-}
-
-.btn-secondary {
-    background: #043460;
-    color: white;
-}
-
-.btn-outline {
-    background: transparent;
-    border: 2px solid #043460;
-    color: #043460;
-    margin-top: 10px;
-}
-
-.btn-outline:hover {
-    background: #043460;
-    color: white;
-}
-
-.btn-danger {
-    background: #EF4444;
-    color: white;
-    width: 100%;
-    margin-top: 10px;
-}
-
-.btn-full {
-    width: 100%;
-}
-
-.admin-card {
-    border: 2px solid #CA9F37;
-}
-
-.admin-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.alert {
-    padding: 15px 20px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    font-family: 'Crimson Pro', serif;
-}
-
-.alert-error {
-    background: #FEF2F2;
-    border: 1px solid #FECACA;
-    color: #DC2626;
-}
-
-.alert-success {
-    background: #F0FDF4;
-    border: 1px solid #BBF7D0;
-    color: #16A34A;
-}
-
-@media (max-width: 768px) {
-    .activity-detail-grid {
-        grid-template-columns: 1fr;
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    primary: '#043460',
+                    'primary-dark': '#032A47',
+                    'primary-light': '#0A4A80',
+                }
+            }
+        }
     }
-    
-    .activity-hero h1 {
-        font-size: 28px;
-    }
-}
-</style>
+</script>
 
-<?php
-// Include footer
-require_once dirname(__DIR__) . '/layouts/footer.php';
-?>
+<?php require_once dirname(__DIR__) . '/layouts/footer.php'; ?>
+
