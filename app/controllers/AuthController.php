@@ -95,14 +95,20 @@ class AuthController extends Controller
             $errors[] = 'Password is required.';
         }
 
+
         if (!empty($errors)) {
             Session::setFlash('error', implode('<br>', $errors));
             $this->redirectTo('/auth/auth?mode=login');
             return;
         }
 
+
+
+
         // Attempt login
         $user = $this->userModel->verifyCredentials($email, $password);
+
+
 
         if ($user === null) {
             Session::setFlash('error', 'Invalid email or password.');
@@ -112,7 +118,7 @@ class AuthController extends Controller
 
         // Login successful
         Session::login($user);
-        
+
         // Set remember me cookie if checked
         if (isset($_POST['remember']) && $_POST['remember'] === 'on') {
             $this->setRememberMe($user['id']);
