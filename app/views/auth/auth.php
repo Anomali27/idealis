@@ -445,7 +445,7 @@ $showRegister = $_GET['mode'] ?? 'login';
             </div>
             
             <div class="back-link">
-                <a href="/">← Back to Home</a>
+                <a href="/home">← Back to Home</a>
             </div>
         </div>
 
@@ -473,7 +473,6 @@ $showRegister = $_GET['mode'] ?? 'login';
                 </div>
                 
                 <form action="/auth/authenticate" method="POST" id="loginForm">
-                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token ?? '') ?>">
                     
                     <div class="form-group">
                         <label for="login-email" class="form-label">Email Address</label>
@@ -506,7 +505,6 @@ $showRegister = $_GET['mode'] ?? 'login';
                 </div>
                 
                 <form action="/auth/store" method="POST" id="registerForm">
-                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token ?? '') ?>">
                     
                     <div class="form-group">
                         <label for="reg-name" class="form-label">Full Name</label>

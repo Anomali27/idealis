@@ -19,7 +19,9 @@ class Router
     {
         $method = $_SERVER['REQUEST_METHOD'];
         $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-
+        
+        // Normalize URI - fix double slashes
+        $uri = preg_replace('#/{2,}#', '/', $uri);
         $uri = rtrim($uri, '/');
         if ($uri === '') {
             $uri = '/';

@@ -5,7 +5,7 @@
 <section class="hero-section relative h-screen min-h-[600px]">
     <!-- Hero Background Image -->
     <div class="absolute inset-0">
-        <img src="https://images.unsplash.com/photo-1562774053-701939374585?w=1920&q=80" 
+        <img src="/assets/images/school_hallway.png" 
              alt="Pontianak International College Building" 
              class="w-full h-full object-cover">
         <!-- Blue Overlay -->
@@ -23,10 +23,10 @@
                 Join us in building a better future through learning and community service.
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="#" class="px-8 py-3 bg-white text-primary font-semibold rounded-full hover:bg-gray-100 transition duration-300 shadow-lg">
+                <a href="" class="px-8 py-3 bg-white text-primary font-semibold rounded-full hover:bg-gray-100 transition duration-300 shadow-lg">
                     Explore More
                 </a>
-                <a href="#" class="px-8 py-3 bg-transparent border-2 border-white text-white font-semibold rounded-full hover:bg-white hover:text-primary transition duration-300">
+                <a href="/activities" class="px-8 py-3 bg-transparent border-2 border-white text-white font-semibold rounded-full hover:bg-white hover:text-primary transition duration-300">
                     View Events
                 </a>
             </div>
@@ -47,7 +47,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <!-- Left Side - Student Image -->
             <div class="relative">
-                <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&q=80" 
+                <img src="/assets/images/school_view.png" 
                      alt="Students with books" 
                      class="rounded-2xl shadow-2xl w-full object-cover h-[400px]">
                 <!-- Decorative Element -->
@@ -62,18 +62,21 @@
                     <p class="text-lg leading-relaxed text-gray-100">
                         PIC aims to prepare students for future academic and professional challenges by combining modern teaching methods, character development, and diverse extracurricular activities in a supportive and multicultural school community.
                     </p>
-                    <div class="mt-6 flex gap-4">
-                        <div class="text-center">
-                            <span class="block text-3xl font-bold">500+</span>
-                            <span class="text-sm text-gray-300">Students</span>
+                    <div class="mt-8 flex gap-8 left">
+                        <div class="text-left ">
+                            <span class="block text-3xl font-bold">500+
+                                <span class="text-sm text-gray-300">Students</span>
+                            </span> 
                         </div>
-                        <div class="text-center">
-                            <span class="block text-3xl font-bold">50+</span>
-                            <span class="text-sm text-gray-300">Teachers</span>
+                        <div class="text-left">
+                            <span class="block text-3xl font-bold">50+
+                                <span class="text-sm text-gray-300">Teachers</span>
+                            </span>
                         </div>
-                        <div class="text-center">
-                            <span class="block text-3xl font-bold">20+</span>
-                            <span class="text-sm text-gray-300">Activities</span>
+                        <div class="text-left"></div>
+                            <span class="block text-3xl font-bold">20+
+                                <span class="text-sm text-gray-300">Events</span>
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -96,7 +99,7 @@
             <!-- News Card 1 -->
             <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition duration-300 transform hover:-translate-y-1">
                 <div class="h-48 overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1544531696-b973684ea286?w=600&q=80" 
+                    <img src="/assets/images/school_hallway.png" 
                          alt="Science Fair 2026" 
                          class="w-full h-full object-cover">
                 </div>

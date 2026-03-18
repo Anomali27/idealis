@@ -236,33 +236,7 @@ class Session
         self::setExpiry($seconds);
     }
 
-    /**
-     * Get CSRF token
-     */
-    public static function getCsrfToken(): string
-    {
-        if (!self::has('csrf_token')) {
-            self::set('csrf_token', bin2hex(random_bytes(32)));
-        }
-        return self::get('csrf_token');
-    }
 
-    /**
-     * Validate CSRF token
-     */
-    public static function validateCsrfToken(string $token): bool
-    {
-        return self::has('csrf_token') && hash_equals(self::get('csrf_token'), $token);
-    }
-
-    /**
-     * Generate new CSRF token
-     */
-    public static function regenerateCsrfToken(): string
-    {
-        self::set('csrf_token', bin2hex(random_bytes(32)));
-        return self::get('csrf_token');
-    }
 
     /**
      * Get all session data (for debugging)

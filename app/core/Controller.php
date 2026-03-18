@@ -144,8 +144,10 @@ class Controller
         $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
         $host = $_SERVER['HTTP_HOST'];
         $scriptDir = dirname($_SERVER['SCRIPT_NAME']);
-
-        return $protocol . '://' . $host . ($scriptDir !== '/' ? $scriptDir : '');
+        
+        // Fix double slashes
+        $base = $protocol . '://' . $host . rtrim($scriptDir, '/') . '/';
+        return rtrim($base, '/');
     }
 
     /**

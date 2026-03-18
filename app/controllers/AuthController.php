@@ -34,7 +34,6 @@ class AuthController extends Controller
         $this->layout = false;
 
         $this->data['title'] = 'Login / Register - PIC Social Activity';
-        $this->data['csrf_token'] = Session::getCsrfToken();
 
         $this->render('auth/auth');
     }
@@ -53,7 +52,6 @@ class AuthController extends Controller
         $this->layout = false;
 
         $this->data['title'] = 'Login - PIC Social Activity';
-        $this->data['csrf_token'] = Session::getCsrfToken();
 
         $this->render('auth/auth');
     }
@@ -72,7 +70,6 @@ class AuthController extends Controller
         $this->layout = false;
 
         $this->data['title'] = 'Register - PIC Social Activity';
-        $this->data['csrf_token'] = Session::getCsrfToken();
 
         $this->render('auth/auth');
     }
@@ -82,14 +79,6 @@ class AuthController extends Controller
      */
     public function authenticate(): void
     {
-        // Validate CSRF token
-        $csrfToken = $_POST['csrf_token'] ?? '';
-        if (!Session::validateCsrfToken($csrfToken)) {
-            Session::setFlash('error', 'Invalid security token. Please try again.');
-            $this->redirectTo('/auth/auth?mode=login');
-            return;
-        }
-
         // Validate input
         $email = trim($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
@@ -155,14 +144,6 @@ class AuthController extends Controller
      */
     public function store(): void
     {
-        // Validate CSRF token
-        $csrfToken = $_POST['csrf_token'] ?? '';
-        if (!Session::validateCsrfToken($csrfToken)) {
-            Session::setFlash('error', 'Invalid security token. Please try again.');
-            $this->redirectTo('/auth/auth?mode=register');
-            return;
-        }
-
         // Validate input
         $name = trim($_POST['name'] ?? '');
         $email = trim($_POST['email'] ?? '');
@@ -270,14 +251,8 @@ class AuthController extends Controller
      */
     private function setRememberMe(int $userId): void
     {
-        $token = bin2hex(random_bytes(32));
         $expires = time() + (86400 * 30); // 30 days
-
-        // Store token in database (in production)
-        // setcookie('remember_token', $token, $expires, '/', '', true, true);
-        
-        // For now, just set a simple cookie
-        setcookie('remember_user', $userId, $expires, '/');
+        setcookie('remember_user', hash('sha256', $userId . session_id()), $expires, '/');
     }
 
     /**
