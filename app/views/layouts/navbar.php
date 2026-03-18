@@ -56,18 +56,20 @@
                         Login
                     </a>
                 <?php else: 
-                    $userName = Session::getUserName();
+$user = Session::getUser();
+                    $fullName = $user['name'] ?? Session::getUserName() ?? 'User';
                     $role = Session::getUserRole();
-                    $displayName = ($role === 'admin') ? 'admin' : $userName;
-                    $initials = strtoupper(substr($displayName, 0, 2)); // First 2 uppercase
+                    $displayName = ($role === 'admin') ? 'admin' : $fullName;
+                    $words = preg_split('/\\s+/', trim($fullName));
+                    $initials = strtoupper(($words[0][0] ?? '') . ($words[1][0] ?? substr($fullName, 0, 1)));
                 ?>
                     <!-- Logged In: Name + Avatar Dropdown -->
                     <div class="flex items-center space-x-2">
                         <span class="text-white/90 font-medium text-sm md:text-base hidden lg:block"><?php echo htmlspecialchars($displayName); ?></span>
-                        <div class="relative" onmouseenter="showDropdown()" onmouseleave="hideDropdown()">
-                            <button class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-all duration-300 text-white font-semibold text-sm md:text-base">
-                                <?php echo htmlspecialchars($initials); ?>
-                            </button>
+                        <div class="relative">
+                                <button id="profile-btn" onclick="toggleDropdown(event)" class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-all duration-300 text-white font-semibold text-sm md:text-base" aria-label="Profile menu">
+                                    <?php echo htmlspecialchars($initials); ?>
+                                </button>
                             <!-- Dropdown -->
                             <div id="dropdown-menu" class="absolute right-0 md:right-2 top-full mt-2 w-48 bg-white/90 backdrop-blur-md shadow-xl rounded-xl py-2 opacity-0 invisible transform scale-95 transition-all duration-200 origin-top-right z-50 hidden">
                                 <a href="/profile" class="block px-4 py-2 text-gray-800 hover:bg-gray-100 rounded-lg font-medium transition-colors">Settings</a>
@@ -114,12 +116,30 @@ function toggleMobileMenu() {
     menu.classList.toggle('hidden');
 }
 
-function showDropdown() {
-    document.getElementById('dropdown-menu').classList.remove('opacity-0', 'invisible', 'scale-95', 'hidden');
-    document.getElementById('dropdown-menu').classList.add('opacity-100', 'visible', 'scale-100');
+let dropdownOpen = false;
+
+function toggleDropdown(event) {
+    event.stopPropagation();
+    const dropdown = document.getElementById('dropdown-menu');
+    const btn = document.getElementById('profile-btn');
+    
+    if (dropdownOpen) {
+        dropdown.classList.add('opacity-0', 'invisible', 'scale-95', 'hidden');
+        dropdownOpen = false;
+    } else {
+        dropdown.classList.remove('opacity-0', 'invisible', 'scale-95', 'hidden');
+        dropdown.classList.add('opacity-100', 'visible', 'scale-100');
+        dropdownOpen = true;
+    }
 }
 
-function hideDropdown() {
-    document.getElementById('dropdown-menu').classList.add('opacity-0', 'invisible', 'scale-95', 'hidden');
-}
+// Close on outside click
+document.addEventListener('click', function(event) {
+    const dropdown = document.getElementById('dropdown-menu');
+    const btn = document.getElementById('profile-btn');
+    if (dropdownOpen && !btn.contains(event.target) && !dropdown.contains(event.target)) {
+        dropdown.classList.add('opacity-0', 'invisible', 'scale-95', 'hidden');
+        dropdownOpen = false;
+    }
+});
 </script>

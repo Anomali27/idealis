@@ -266,6 +266,28 @@ class UserController extends Controller
     }
 
     /**
+     * Profile page - show user info + event history
+     */
+    public function profile(): void
+    {
+        AuthMiddleware::handle();
+
+        $userId = Session::getUserId();
+        $userModel = new User();
+        $activityModel = new Activity();
+        
+        $user = $userModel->getById($userId);
+        $activities = $activityModel->getAll(); // Fake history from activities
+
+        $this->data['title'] = 'Profile & Settings - PIC Social Activity';
+        $this->data['user'] = $user;
+        $this->data['activities'] = $activities;
+        $this->data['roleLabel'] = User::getRoleLabel($user['role'] ?? '');
+
+        $this->render('profile/index');
+    }
+
+    /**
      * Validate user input
      */
     private function validateUser(array $data, int $excludeId = null): array
