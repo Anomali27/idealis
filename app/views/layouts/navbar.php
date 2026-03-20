@@ -6,7 +6,7 @@
             <!-- Logo (Fixed Aspect) -->
             <div class="flex-shrink-0">
                 <a href="/" class="flex items-center">
-                    <img src="/assets/images/logo_white.png" alt="PIC Logo" class="h-30 md:h-36 w-auto object-contain">
+                    <img src="/assets/images/logo/logo_white.png" alt="PIC Logo" class="h-30 md:h-36 w-auto object-contain">
                 </a>
             </div>
             

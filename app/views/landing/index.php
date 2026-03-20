@@ -5,7 +5,7 @@
 <section class="hero-section relative h-screen min-h-[600px]">
     <!-- Hero Background Image -->
     <div class="absolute inset-0">
-        <img src="/assets/images/school_hallway.png" 
+        <img src="/assets/images/school/school_hallway.png" 
              alt="Pontianak International College Building" 
              class="w-full h-full object-cover">
         <!-- Blue Overlay -->
@@ -47,7 +47,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <!-- Left Side - Student Image -->
             <div class="relative">
-                <img src="/assets/images/school_view.png" 
+                <img src="/assets/images/school/school_view.png" 
                      alt="Students with books" 
                      class="rounded-2xl shadow-2xl w-full object-cover h-[400px]">
                 <!-- Decorative Element -->
@@ -99,61 +99,54 @@
             <!-- News Card 1 -->
             <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition duration-300 transform hover:-translate-y-1">
                 <div class="h-48 overflow-hidden">
-                    <img src="/assets/images/school_hallway.png" 
-                         alt="Science Fair 2026" 
+                    <img src="/assets/images/latest/national_robotic_championship.png" 
+                         alt="National Robotic Championship" 
                          class="w-full h-full object-cover">
                 </div>
                 <div class="p-6">
-                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Annual Science Fair 2026</h3>
-                    <p class="text-gray-600">Students showcase innovative projects in science and technology.</p>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Victory Celebration: National Robotics Championship Award Ceremony</h3>
+                    <p class="text-gray-600">Inspiring the next generation of engineers</p>
                 </div>
             </div>
             
             <!-- News Card 2 -->
             <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition duration-300 transform hover:-translate-y-1">
                 <div class="h-48 overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1529070538774-1843cb3265df?w=600&q=80" 
+                    <img src="/assets/images/latest/repla_brick.png" 
                          alt="Community Service" 
                          class="w-full h-full object-cover">
                 </div>
                 <div class="p-6">
-                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Community Service Program</h3>
-                    <p class="text-gray-600">PIC students participate in local community outreach programs.</p>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">UMKM Empowerment Fair: Supporting Local Businesses Through Digital Innovation</h3>
+                    <p class="text-gray-600">Empowering local businesses through modern technology</p>
                 </div>
             </div>
             
             <!-- News Card 3 -->
             <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition duration-300 transform hover:-translate-y-1">
                 <div class="h-48 overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?w=600&q=80" 
+                    <img src="/assets/images/latest/umkm_empowerment.png" 
                          alt="Sports Day" 
                          class="w-full h-full object-cover">
                 </div>
                 <div class="p-6">
-                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Inter-House Sports Day</h3>
-                    <p class="text-gray-600">Annual sports competition brings out athletic talents.</p>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Eco-Innovation Showcase: REPLA-BRICK Sustainable Paving Solutions</h3>
+                    <p class="text-gray-600">Revolutionizing construction with recycled materials</p>
                 </div>
             </div>
             
             <!-- News Card 4 -->
             <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition duration-300 transform hover:-translate-y-1">
                 <div class="h-48 overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=600&q=80" 
+                    <img src="/assets/images/latest/youth_voices_circle.png" 
                          alt="Cultural Festival" 
                          class="w-full h-full object-cover">
                 </div>
                 <div class="p-6">
-                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Cultural Festival Celebration</h3>
-                    <p class="text-gray-600">Students celebrate diversity through music, dance, and art.</p>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Youth Voices Circle: Forum Diskusi Kesehatan Mental</h3>
+                    <p class="text-gray-600">Sharing stories to build emotional resilience.</p>
                 </div>
             </div>
-        </div>
-        
-        <!-- View More Button -->
-        <div class="text-center mt-10">
-            <a href="#" class="inline-block px-8 py-3 bg-primary text-white font-semibold rounded-full hover:bg-primary-dark transition duration-300 shadow-lg">
-                View All News
-            </a>
         </div>
     </div>
 </section>

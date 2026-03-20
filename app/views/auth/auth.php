@@ -433,7 +433,7 @@ $showRegister = $_GET['mode'] ?? 'login';
         <!-- Left Side - Branding -->
         <div class="auth-brand">
             <!-- Logo Image -->
-            <img src="/assets/images/logo_white.png" alt="PIC Logo" class="brand-logo-img">
+            <img src="/assets/images/logo/logo_white.png" alt="PIC Logo" class="brand-logo-img">
             
             <div class="brand-tagline">Social Activity</div>
             <h2 class="brand-title">Pontianak International College</h2>

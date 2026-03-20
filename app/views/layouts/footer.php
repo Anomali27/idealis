@@ -5,7 +5,7 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16 mb-12">
             <!-- Brand -->
                 <a href="/" class="flex items-center">
-                    <img src="/assets/images/logo_white.png" alt="PIC Logo" class="h-30 md:h-36 w-auto object-contain">
+                    <img src="/assets/images/logo/logo_white.png" alt="PIC Logo" class="h-30 md:h-36 w-auto object-contain">
                 </a>
 
             <!-- Quick Links -->
