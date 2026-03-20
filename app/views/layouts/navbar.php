@@ -73,7 +73,7 @@ $user = Session::getUser();
                             <!-- Dropdown -->
                             <div id="dropdown-menu" class="absolute right-0 md:right-2 top-full mt-2 w-48 bg-white/90 backdrop-blur-md shadow-xl rounded-xl py-2 opacity-0 invisible transform scale-95 transition-all duration-200 origin-top-right z-50 hidden">
                                 <a href="/profile" class="block px-4 py-2 text-gray-800 hover:bg-gray-100 rounded-lg font-medium transition-colors">Settings</a>
-                                <a href="/logout" class="block px-4 py-2 text-gray-800 hover:bg-gray-100 rounded-lg font-medium transition-colors">Logout</a>
+<a href="/auth/logout" class="block px-4 py-2 text-gray-800 hover:bg-gray-100 rounded-lg font-medium transition-colors">Logout</a>
                             </div>
                         </div>
                     </div>
@@ -102,7 +102,7 @@ $user = Session::getUser();
 <a href="/admin/dashboard" class="block px-3 py-2 rounded-md <?php echo ($currentPath === 'admin/dashboard') ? 'bg-primary-light text-white' : 'text-white hover:bg-white/10'; ?> font-medium">Dashboard</a>
                 <?php endif; ?>
                 <a href="/profile" class="block px-3 py-2 rounded-md text-white hover:bg-white/10 font-medium"><?php echo htmlspecialchars($userName ?? 'Profile'); ?></a>
-                <a href="/logout" class="block px-3 py-2 rounded-md text-white hover:bg-white/10 font-medium">Logout</a>
+<a href="/auth/logout" class="block px-3 py-2 rounded-md text-white hover:bg-white/10 font-medium">Logout</a>
             <?php else: ?>
                 <a href="/auth/login" class="block px-3 py-2 rounded-md text-white hover:bg-white/10 font-medium">Login</a>
             <?php endif; ?>

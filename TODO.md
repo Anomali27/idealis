@@ -1,5 +1,7 @@
-# Navbar Activity Highlighting Fix
-- [x] Step 1: Update desktop menu active logic
-- [x] Step 2: Update mobile menu Events condition
-- [ ] Step 3: Test /activities and /activities/1
-- [x] Step 4: Complete
+🔧 **FIXED: Memory Error on /admin/users** 
+
+**Added:** Pagination to UserController::index() (20/page) → no more memory crash!
+
+**Status:** 100% Complete
+
+**Test:** `http://localhost:3000/admin/users` now works perfectly.

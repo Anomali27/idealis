@@ -79,7 +79,7 @@ class DashboardController extends Controller
 
         // Get statistics
         $activityStats = $this->activityModel->getStats();
-        $totalUsers = $this->userModel->count();
+        $totalUsers = $this->userModel->getActiveCount();
         $pendingSuggestions = $this->suggestionModel->getPendingCount();
 
         // Get recent activities

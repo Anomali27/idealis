@@ -35,7 +35,8 @@ class UserController extends Controller
             'is_active' => true
         ];
 
-        $users = $this->userModel->getAll($filters);
+        $page = max(1, (int)($_GET['page'] ?? 1));
+        $users = $this->userModel->getPaginated($page, 25, $filters);
 
         $this->data['title'] = 'User Management - PIC Social Activity';
         $this->data['users'] = $users;

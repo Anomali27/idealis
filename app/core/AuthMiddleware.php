@@ -71,7 +71,7 @@ class AuthMiddleware
     {
         $role = Session::getUserRole();
         $redirects = [
-            'admin' => '/admin/dashboard',
+            'admin' => '/',
             'committee' => '/committee/dashboard',
             'student' => '/student/dashboard',
             'teacher' => '/teacher/dashboard'

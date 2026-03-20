@@ -242,7 +242,7 @@ class AuthController extends Controller
     private function redirectBasedOnRole(string $role): void
     {
         $redirects = [
-            'admin' => '/admin/dashboard',
+            'admin' => '/',
             'committee' => '/committee/dashboard',
             'student' => '/',
             'teacher' => '/'
