@@ -9,7 +9,7 @@ $success = \App\Core\Session::getFlash('success');
 $activity = $data['activity'] ?? null;
 $activities = $data['activities'] ?? [];
 $paymentMethods = $data['paymentMethods'] ?? [];
-$csrf_token = $data['csrf_token'] ?? '';
+
 $isLoggedIn = \App\Core\Session::isLoggedIn();
 $userName = \App\Core\Session::getUserName();
 $userEmail = \App\Core\Session::getUserEmail();
@@ -75,8 +75,6 @@ $userEmail = \App\Core\Session::getUserEmail();
             <h2>Donation Form</h2>
             
             <form action="/donations/store" method="POST">
-                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
-                
                 <?php if (!empty($activities) && count($activities) > 0): ?>
                     <div class="form-group">
                         <label for="activity_id">Select Activity (Optional)</label>

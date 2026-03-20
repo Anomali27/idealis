@@ -7,7 +7,7 @@ use App\Core\Session;
 $error = \App\Core\Session::getFlash('error');
 $success = \App\Core\Session::getFlash('success');
 $activity = $data['activity'] ?? [];
-$csrf_token = $data['csrf_token'] ?? '';
+
 $userName = \App\Core\Session::getUserName();
 ?>
 
@@ -99,7 +99,6 @@ $userName = \App\Core\Session::getUserName();
             <h2>Registration Form</h2>
             
             <form action="/volunteers/store" method="POST">
-                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
                 <input type="hidden" name="activity_id" value="<?= $activity['id'] ?>">
                 
                 <div class="form-group">

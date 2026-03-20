@@ -80,8 +80,6 @@ class ActivityController extends Controller
 
         $this->data['title'] = 'Create Activity - PIC Social Activity';
         $this->data['statuses'] = Activity::getStatuses();
-        $this->data['csrf_token'] = Session::getCsrfToken();
-
         $this->render('activities/create');
     }
 
@@ -92,14 +90,6 @@ class ActivityController extends Controller
     {
         // Require login and admin/committee role
         AuthMiddleware::handleAnyRole(['admin', 'committee']);
-
-        // Validate CSRF token
-        $csrfToken = $_POST['csrf_token'] ?? '';
-        if (!Session::validateCsrfToken($csrfToken)) {
-            Session::setFlash('error', 'Invalid security token.');
-            $this->redirectTo('/activities/create');
-            return;
-        }
 
         // Validate input
         $errors = $this->validateActivity($_POST);
@@ -164,8 +154,6 @@ class ActivityController extends Controller
         $this->data['title'] = 'Edit Activity - PIC Social Activity';
         $this->data['activity'] = $activity;
         $this->data['statuses'] = Activity::getStatuses();
-        $this->data['csrf_token'] = Session::getCsrfToken();
-
         $this->render('activities/edit');
     }
 
@@ -188,14 +176,6 @@ class ActivityController extends Controller
         if (Session::hasRole('committee') && $activity['created_by'] != Session::getUserId()) {
             Session::setFlash('error', 'You can only edit your own activities.');
             $this->redirectTo('/activities');
-            return;
-        }
-
-        // Validate CSRF token
-        $csrfToken = $_POST['csrf_token'] ?? '';
-        if (!Session::validateCsrfToken($csrfToken)) {
-            Session::setFlash('error', 'Invalid security token.');
-            $this->redirectTo('/activities/' . $id . '/edit');
             return;
         }
 

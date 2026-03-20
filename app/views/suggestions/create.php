@@ -7,7 +7,7 @@ use App\Core\Session;
 $error = \App\Core\Session::getFlash('error');
 $success = \App\Core\Session::getFlash('success');
 $categories = $data['categories'] ?? [];
-$csrf_token = $data['csrf_token'] ?? '';
+
 ?>
 
 <!-- Suggestion Page -->
@@ -33,8 +33,6 @@ $csrf_token = $data['csrf_token'] ?? '';
             <h2>Your Suggestion</h2>
             
             <form action="/suggestions/store" method="POST">
-                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
-                
                 <div class="form-group">
                     <label for="category">Category *</label>
                     <select id="category" name="category" class="form-input" required>

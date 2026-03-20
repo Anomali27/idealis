@@ -80,8 +80,6 @@ class DonationController extends Controller
         $this->data['activity'] = $activity;
         $this->data['activities'] = $activities;
         $this->data['paymentMethods'] = Donation::getPaymentMethods();
-        $this->data['csrf_token'] = Session::getCsrfToken();
-
         $this->render('donations/create');
     }
 
@@ -93,14 +91,6 @@ class DonationController extends Controller
         // Require login for authenticated donation
         $isLoggedIn = Session::isLoggedIn();
         
-        // Validate CSRF token
-        $csrfToken = $_POST['csrf_token'] ?? '';
-        if (!Session::validateCsrfToken($csrfToken)) {
-            Session::setFlash('error', 'Invalid security token.');
-            $this->redirectTo('/donations/create');
-            return;
-        }
-
         // Validate input
         $errors = $this->validateDonation($_POST);
 

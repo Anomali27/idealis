@@ -7,7 +7,7 @@ use App\Core\Session;
 $error = \App\Core\Session::getFlash('error');
 $success = \App\Core\Session::getFlash('success');
 $statuses = $data['statuses'] ?? [];
-$csrf_token = $data['csrf_token'] ?? '';
+
 ?>
 
 <!-- Create Activity Page -->
@@ -30,8 +30,6 @@ $csrf_token = $data['csrf_token'] ?? '';
 
     <div class="form-container">
         <form action="/activities/store" method="POST" class="activity-form">
-            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
-            
             <!-- Basic Info -->
             <div class="form-section">
                 <h2>Basic Information</h2>

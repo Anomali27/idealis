@@ -1,25 +1,13 @@
-# Profile Dropdown & Settings - ✅ COMPLETE
+# CSRF Removal Progress
+Status: In Progress
 
-All steps done:
-### ✅ Navbar: Click toggle + proper initials (EC from full name)
-### ✅ Profile: /profile route + controller + full view (identity + fake events tables)
-### ✅ JS: Global toggle + outside click close
-### ✅ Logout: Redirects to landing (existing)
-### ✅ Layout: Fixed navbar overlap with pt-20 padding
+## Steps:
+- [x] 1. Analyzed project - identified 10 CSRF files
+- [x] 2. Read all 10 files contents  
+- [x] 3. Got user plan approval
+- [x] 4. Edit 5 controllers (remove token assignments + validation blocks)
+- [x] 5. Edit 5 views (remove csrf var + hidden input)
+- [x] 6. Verify no syntax errors (`php -l`)
+- [ ] 7. Test affected forms
+- [ ] 8. Complete task
 
-**Test Commands:**
-```bash
-# Serve project
-php -S localhost:8000 public/index.php
-
-# Or use Laragon Apache
-# Visit localhost/idealis
-```
-
-**Features Working:**
-- Click profile initials → dropdown (Settings/Logout)
-- Settings → Full profile + events as participant/panitia
-- No navbar overlap
-- Responsive design
-
-Task complete!
