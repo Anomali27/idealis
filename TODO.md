@@ -1,13 +1,5 @@
-# Events Page ✅ COMPLETE
-
-**Updated features:**
-- 4 tabs (All/Ongoing/Upcoming/Completed) with 10 sample events using project images
-- Removed search/filter completely
-- Kanit/Kameron fonts integrated via Tailwind + Google Fonts preload
-- FAB "Community Forum" pill button
-- Responsive design, hover animations, status badges
-
-**View:** http://localhost:3000/activities
-
-All steps complete.
-
+# Navbar Activity Highlighting Fix
+- [x] Step 1: Update desktop menu active logic
+- [x] Step 2: Update mobile menu Events condition
+- [ ] Step 3: Test /activities and /activities/1
+- [x] Step 4: Complete
