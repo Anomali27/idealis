@@ -144,7 +144,7 @@
                 </div>
                 <div class="p-6">
                     <h3 class="text-xl font-semibold text-gray-800 mb-2">Youth Voices Circle: Forum Diskusi Kesehatan Mental</h3>
-                    <p class="text-gray-600">Sharing stories to build emotional resilience.</p>
+                    <p class="text-gray-600">Sharing stories to build emotional resilience</p>
                 </div>
             </div>
         </div>

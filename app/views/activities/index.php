@@ -118,11 +118,9 @@ $tabData = ['all' => $sampleEvents, 'ongoing' => array_filter($sampleEvents, fn(
 
 <!-- Floating Action Button -->
 <div class="fixed bottom-8 right-8 z-50">
-
-    <a href="/community-forum" class="min-w-[200px] h-14 bg-blue-900 hover:bg-blue-800 text-white rounded-2xl shadow-2xl hover:shadow-3xl hover:scale-105 transition-all duration-300 flex items-center justify-center font-bold text-sm px-6">
-        Community Forum
+    <a href="/suggestions/index.php" class="min-w-[200px] h-14 bg-blue-900 hover:bg-blue-800 text-white rounded-2xl shadow-2xl hover:shadow-3xl hover:scale-105 transition-all duration-300 flex items-center justify-center font-bold text px-12">
+        Suggestion
     </a>
-
 </div>
 
 <!-- Tailwind Line Clamp -->
