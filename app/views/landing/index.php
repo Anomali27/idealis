@@ -5,7 +5,7 @@
 <section class="hero-section relative h-screen min-h-[600px]">
     <!-- Hero Background Image -->
     <div class="absolute inset-0">
-        <img src="/assets/images/school/school_hallway.png" 
+        <img src="/assets/images/school/school-hallway.png" 
              alt="Pontianak International College Building" 
              class="w-full h-full object-cover">
         <!-- Blue Overlay -->
@@ -47,7 +47,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <!-- Left Side - Student Image -->
             <div class="relative">
-                <img src="/assets/images/school/school_view.png" 
+                <img src="/assets/images/school/school-view.png" 
                      alt="Students with books" 
                      class="rounded-2xl shadow-2xl w-full object-cover h-[400px]">
                 <!-- Decorative Element -->
@@ -99,7 +99,7 @@
             <!-- News Card 1 -->
             <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition duration-300 transform hover:-translate-y-1">
                 <div class="h-48 overflow-hidden">
-                    <img src="/assets/images/latest/national_robotic_championship.png" 
+                    <img src="/assets/images/latest/national-robotic-championship.png" 
                          alt="National Robotic Championship" 
                          class="w-full h-full object-cover">
                 </div>
@@ -112,7 +112,7 @@
             <!-- News Card 2 -->
             <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition duration-300 transform hover:-translate-y-1">
                 <div class="h-48 overflow-hidden">
-                    <img src="/assets/images/latest/repla_brick.png" 
+                    <img src="/assets/images/latest/repla-brick.png" 
                          alt="Community Service" 
                          class="w-full h-full object-cover">
                 </div>
@@ -125,7 +125,7 @@
             <!-- News Card 3 -->
             <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition duration-300 transform hover:-translate-y-1">
                 <div class="h-48 overflow-hidden">
-                    <img src="/assets/images/latest/umkm_empowerment.png" 
+                    <img src="/assets/images/latest/umkm-empowerment.png" 
                          alt="Sports Day" 
                          class="w-full h-full object-cover">
                 </div>
@@ -138,7 +138,7 @@
             <!-- News Card 4 -->
             <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition duration-300 transform hover:-translate-y-1">
                 <div class="h-48 overflow-hidden">
-                    <img src="/assets/images/latest/youth_voices_circle.png" 
+                    <img src="/assets/images/latest/youth-voices-circle.png" 
                          alt="Cultural Festival" 
                          class="w-full h-full object-cover">
                 </div>

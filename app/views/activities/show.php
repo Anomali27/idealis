@@ -63,7 +63,7 @@ $userRole = Session::getUserRole();
 
                 <!-- Banner Image -->
                 <div class="bg-gradient-to-r from-gray-100 to-slate-100 rounded-3xl overflow-hidden shadow-xl">
-                    <img src="/assets/images/event/eco_exploration_project.png" alt="Eco Exploration Project"
+                    <img src="/assets/images/event/eco-exploration-project.png" alt="Eco Exploration Project"
                         class="w-full h-96 object-cover rounded-t-3xl">
                 </div>
 

@@ -64,7 +64,7 @@ $showRegister = $_GET['mode'] ?? 'login';
             padding: 20px;
             /* School Background Image - Local */
             background: linear-gradient(rgba(4,52,96,0.85), rgba(4,52,96,0.75)),
-                        url('/assets/images/school_view.png') center/cover no-repeat;
+                        url('/assets/images/school-view.png') center/cover no-repeat;
         }
 
         /* Main Container - Landscape Box */
@@ -433,7 +433,7 @@ $showRegister = $_GET['mode'] ?? 'login';
         <!-- Left Side - Branding -->
         <div class="auth-brand">
             <!-- Logo Image -->
-            <img src="/assets/images/logo/logo_white.png" alt="PIC Logo" class="brand-logo-img">
+            <img src="/assets/images/logo/logo-white.png" alt="PIC Logo" class="brand-logo-img">
             
             <div class="brand-tagline">Social Activity</div>
             <h2 class="brand-title">Pontianak International College</h2>
