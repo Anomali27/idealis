@@ -53,21 +53,21 @@ class LandingController extends Controller
     {
         $stats = [];
 
-        // Total activities
-        $result = $this->db->queryOne("SELECT COUNT(*) as total FROM activities WHERE status = 'completed'");
-        $stats['total_activities'] = $result['total'] ?? 0;
+        // Total students
+        $result = $this->db->queryOne("SELECT COUNT(*) as total FROM users WHERE role = 'student'");
+        $stats['total_students'] = $result['total'] ?? 0;
 
-        // Total volunteers
-        $result = $this->db->queryOne("SELECT COUNT(DISTINCT user_id) as total FROM volunteers");
-        $stats['total_volunteers'] = $result['total'] ?? 0;
+        // Total teachers
+        $result = $this->db->queryOne("SELECT COUNT(*) as total FROM users WHERE role = 'teacher'");
+        $stats['total_teachers'] = $result['total'] ?? 0;
 
-        // Total donations
-        $result = $this->db->queryOne("SELECT COALESCE(SUM(amount), 0) as total FROM donations WHERE status = 'verified'");
-        $stats['total_donations'] = $result['total'] ?? 0;
+        // Total events
+        $result = $this->db->queryOne("SELECT COUNT(*) as total FROM activities");
+        $stats['total_events'] = $result['total'] ?? 0;
 
-        // Upcoming activities
-        $result = $this->db->queryOne("SELECT COUNT(*) as total FROM activities WHERE status = 'upcoming'");
-        $stats['upcoming_activities'] = $result['total'] ?? 0;
+        // Total volunteer hours (estimated: completed volunteers * 2 hours)
+        $result = $this->db->queryOne("SELECT COUNT(*) as total FROM volunteers WHERE status = 'completed'");
+        $stats['total_hours'] = ($result['total'] ?? 0) * 2;
 
         return $stats;
     }
