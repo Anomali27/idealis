@@ -33,7 +33,7 @@ class Router
                 continue;
             }
 
-            $pattern = str_replace('{id}', '([0-9]+)', $route['uri']);
+            $pattern = preg_replace('/\{[a-zA-Z_]+\}/', '([0-9]+)', $route['uri']);
             $pattern = '#^' . $pattern . '$#';
 
             if (preg_match($pattern, $uri, $matches)) {

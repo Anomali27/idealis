@@ -67,40 +67,23 @@ $router->add('GET', '/student/{id}', 'StudentController', 'show');
 $router->add('GET', '/student/dashboard', 'StudentController', 'dashboard');
 
 // =====================================================
-// ACTIVITY ROUTES
+// EVENT ROUTES (New Events & News System)
 // =====================================================
-$router->add('GET', '/activities', 'ActivityController', 'index');
-$router->add('GET', '/activities/{id}', 'ActivityController', 'show');
-$router->add('GET', '/activities/create', 'ActivityController', 'create');
-$router->add('POST', '/activities/store', 'ActivityController', 'store');
-$router->add('GET', '/activities/{id}/edit', 'ActivityController', 'edit');
-$router->add('POST', '/activities/{id}/update', 'ActivityController', 'update');
-$router->add('POST', '/activities/{id}/delete', 'ActivityController', 'delete');
+$router->add('GET', '/events', 'EventController', 'index');
+$router->add('GET', '/events/{id}', 'EventController', 'show');
+$router->add('GET', '/events/{id}/edit', 'EventController', 'edit');
+$router->add('POST', '/events/{id}/update', 'EventController', 'update');
+$router->add('POST', '/events/{id}/join', 'EventController', 'join');
+$router->add('POST', '/events/{id}/donate', 'EventController', 'donate');
+
+$router->add('GET', '/news/{id}', 'NewsController', 'show');
 
 // =====================================================
-// VOLUNTEER ROUTES
+// API ROUTES - User Role Management
 // =====================================================
-$router->add('GET', '/volunteers', 'VolunteerController', 'index');
-$router->add('GET', '/volunteers/register/{activity_id}', 'VolunteerController', 'register');
-$router->add('POST', '/volunteers/store', 'VolunteerController', 'store');
-$router->add('GET', '/volunteers/history', 'VolunteerController', 'history');
-$router->add('GET', '/volunteers/{id}', 'VolunteerController', 'show');
-$router->add('GET', '/volunteers/{id}/confirm', 'VolunteerController', 'confirm');
-$router->add('GET', '/volunteers/{id}/complete', 'VolunteerController', 'complete');
-$router->add('GET', '/volunteers/{id}/reject', 'VolunteerController', 'reject');
-$router->add('POST', '/volunteers/{id}/cancel', 'VolunteerController', 'cancel');
-$router->add('POST', '/volunteers/{id}/delete', 'VolunteerController', 'delete');
+$router->add('POST', '/api/users/{id}/role', 'UserController', 'updateRole');
 
-// =====================================================
-// DONATION ROUTES
-// =====================================================
-$router->add('GET', '/donations', 'DonationController', 'index');
-$router->add('GET', '/donations/create/{activity_id}', 'DonationController', 'create');
-$router->add('POST', '/donations/store', 'DonationController', 'store');
-$router->add('GET', '/donations/history', 'DonationController', 'history');
-$router->add('GET', '/donations/{id}/confirm', 'DonationController', 'confirm');
-$router->add('GET', '/donations/{id}/reject', 'DonationController', 'reject');
-$router->add('POST', '/donations/{id}/delete', 'DonationController', 'delete');
+
 
 // =====================================================
 // SUGGESTION ROUTES

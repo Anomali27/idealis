@@ -174,63 +174,6 @@
     </div>
 </section>
 
-<!-- UPCOMING SOCIAL ACTIVITIES -->
-<section class="py-24 bg-white relative">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
-            <div>
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 font-poppins mb-4">Upcoming Activities</h2>
-                <p class="text-gray-600 max-w-2xl text-lg">Opportunities to make a tangible impact this month.</p>
-            </div>
-            <a href="/activities" class="mt-4 md:mt-0 text-primary font-semibold hover:text-primary-dark transition-colors flex items-center gap-2 group">
-                View All Events <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-            </a>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <?php if (!empty($activities)): ?>
-                <?php $count = 0; ?>
-                <?php foreach ($activities as $activity): ?>
-                    <?php if ($count >= 3) break; // Display only 3 on landing page ?>
-                    <div class="group bg-white border border-gray-100 rounded-3xl overflow-hidden hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-2 transition-all duration-300">
-                        <!-- Card Image Header -->
-                        <div class="h-48 bg-gray-200 relative overflow-hidden">
-                            <!-- Placeholder image, ideally from DB if dynamic images are stored -->
-                            <img src="/assets/images/event/eco-exploration-project.png" alt="<?= htmlspecialchars($activity['title']) ?>" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                            <div class="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-primary shadow-sm">
-                                <?= date('d M Y', strtotime($activity['activity_date'])) ?>
-                            </div>
-                        </div>
-                        <!-- Card Body -->
-                        <div class="p-6">
-                            <h3 class="text-xl font-bold text-gray-900 font-poppins mb-3 line-clamp-2"><?= htmlspecialchars($activity['title']) ?></h3>
-                            
-                            <div class="space-y-3 mb-6">
-                                <div class="flex items-center text-gray-500 text-sm">
-                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                                    <?= htmlspecialchars($activity['location'] ?? 'Location TBA') ?>
-                                </div>
-                                <div class="flex items-center text-gray-500 text-sm">
-                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                                    <span class="font-medium text-gray-800"><?= $activity['volunteer_count'] ?? 0 ?></span> &nbsp;Volunteers Joined
-                                </div>
-                            </div>
-
-                            <a href="/activities/<?= $activity['id'] ?>" class="block w-full py-3 bg-gray-50 hover:bg-primary text-primary hover:text-white border border-gray-200 hover:border-primary font-semibold rounded-xl text-center transition-colors duration-300">
-                                Join Activity
-                            </a>
-                        </div>
-                    </div>
-                    <?php $count++; ?>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <div class="col-span-full py-12 text-center text-gray-500">
-                    <p>No upcoming activities at the moment. Please check back later!</p>
-                </div>
-            <?php endif; ?>
-        </div>
-    </div>
-</section>
 
 <!-- LATEST NEWS -->
 <section class="py-24 bg-gray-50">
@@ -242,59 +185,54 @@
         
         <!-- Modern Staggered Grid for News -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
-            
-            <!-- News Card 1 -->
-            <div class="group cursor-pointer">
-                <div class="relative h-64 md:h-80 rounded-3xl overflow-hidden shadow-lg mb-6">
-                    <img src="/assets/images/latest/national-robotic-championship.png" alt="National Robotic Championship" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-                    <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent"></div>
-                    <div class="absolute bottom-6 left-6 right-6">
-                        <span class="inline-block px-3 py-1 bg-primary text-white text-xs font-bold rounded-full mb-3 shadow-md">Achievement</span>
-                        <h3 class="text-2xl font-bold text-white font-poppins mb-2 group-hover:text-primary-light transition-colors">National Robotics Championship Award</h3>
+            <?php if (!empty($news)):
+                $categoryColors = [
+                    'Achievement' => ['bg' => 'bg-primary', 'hover' => 'group-hover:text-blue-300'],
+                    'Community' => ['bg' => 'bg-emerald-500', 'hover' => 'group-hover:text-emerald-300'],
+                    'Environment' => ['bg' => 'bg-blue-500', 'hover' => 'group-hover:text-blue-300'],
+                    'Social' => ['bg' => 'bg-indigo-500', 'hover' => 'group-hover:text-indigo-300'],
+                ];
+                $staggerIndex = 0;
+            ?>
+                <?php foreach ($news as $newsItem):
+                    $cat = $newsItem['category'] ?? 'General';
+                    $colorSet = $categoryColors[$cat] ?? ['bg' => 'bg-gray-500', 'hover' => 'group-hover:text-gray-300'];
+                    $isStaggered = ($staggerIndex % 2 === 1);
+                ?>
+                <div class="group <?= $isStaggered ? 'md:mt-12' : '' ?>">
+                    <div class="relative h-64 md:h-80 rounded-3xl overflow-hidden shadow-lg mb-6">
+                        <img src="<?= htmlspecialchars($newsItem['image_url'] ?? '') ?>" 
+                             alt="<?= htmlspecialchars($newsItem['title']) ?>" 
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent"></div>
+                        <div class="absolute bottom-6 left-6 right-6">
+                            <span class="inline-block px-3 py-1 <?= $colorSet['bg'] ?> text-white text-xs font-bold rounded-full mb-3 shadow-md">
+                                <?= htmlspecialchars($cat) ?>
+                            </span>
+                            <h3 class="text-xl md:text-2xl font-bold text-white font-poppins mb-2 <?= $colorSet['hover'] ?> transition-colors line-clamp-2">
+                                <?= htmlspecialchars($newsItem['title']) ?>
+                            </h3>
+                            <p class="text-white/60 text-sm">
+                                <?= date('d M Y', strtotime($newsItem['date'])) ?>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="px-2">
+                        <p class="text-gray-600 line-clamp-2 mb-4">
+                            <?= htmlspecialchars(mb_substr(strip_tags($newsItem['description'] ?? ''), 0, 150)) ?>...
+                        </p>
+                        <a href="/news/<?= $newsItem['id'] ?>" class="inline-flex items-center text-primary font-semibold hover:text-primary-dark transition-colors">
+                            Read More
+                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </a>
                     </div>
                 </div>
-                <p class="text-gray-600 px-2 line-clamp-2">Inspiring the next generation of engineers through rigorous competition and dedication.</p>
-            </div>
-            
-            <!-- News Card 2 -->
-            <div class="group cursor-pointer md:mt-12">
-                <div class="relative h-64 md:h-80 rounded-3xl overflow-hidden shadow-lg mb-6">
-                    <img src="/assets/images/latest/umkm-empowerment.png" alt="UMKM Empowerment" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-                    <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent"></div>
-                    <div class="absolute bottom-6 left-6 right-6">
-                        <span class="inline-block px-3 py-1 bg-emerald-500 text-white text-xs font-bold rounded-full mb-3 shadow-md">Community</span>
-                        <h3 class="text-2xl font-bold text-white font-poppins mb-2 group-hover:text-emerald-300 transition-colors">UMKM Empowerment Fair</h3>
-                    </div>
+                <?php $staggerIndex++; endforeach; ?>
+            <?php else: ?>
+                <div class="col-span-full text-center text-gray-400 py-12">
+                    <p>No news available yet.</p>
                 </div>
-                <p class="text-gray-600 px-2 line-clamp-2">Supporting local businesses through digital innovation and student-led initiatives.</p>
-            </div>
-
-            <!-- News Card 3 -->
-            <div class="group cursor-pointer">
-                <div class="relative h-64 md:h-80 rounded-3xl overflow-hidden shadow-lg mb-6">
-                    <img src="/assets/images/latest/repla-brick.png" alt="Eco Innovation" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-                    <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent"></div>
-                    <div class="absolute bottom-6 left-6 right-6">
-                        <span class="inline-block px-3 py-1 bg-blue-500 text-white text-xs font-bold rounded-full mb-3 shadow-md">Environment</span>
-                        <h3 class="text-2xl font-bold text-white font-poppins mb-2 group-hover:text-blue-300 transition-colors">Eco-Innovation: REPLA-BRICK</h3>
-                    </div>
-                </div>
-                <p class="text-gray-600 px-2 line-clamp-2">Revolutionizing construction with recycled materials for a sustainable future.</p>
-            </div>
-
-            <!-- News Card 4 -->
-            <div class="group cursor-pointer md:mt-12">
-                <div class="relative h-64 md:h-80 rounded-3xl overflow-hidden shadow-lg mb-6">
-                    <img src="/assets/images/latest/youth-voices-circle.png" alt="Mental Health Forum" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-                    <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent"></div>
-                    <div class="absolute bottom-6 left-6 right-6">
-                        <span class="inline-block px-3 py-1 bg-indigo-500 text-white text-xs font-bold rounded-full mb-3 shadow-md">Social</span>
-                        <h3 class="text-2xl font-bold text-white font-poppins mb-2 group-hover:text-indigo-300 transition-colors">Youth Voices Circle: Mental Health</h3>
-                    </div>
-                </div>
-                <p class="text-gray-600 px-2 line-clamp-2">Sharing stories to build emotional resilience and foster open communication among peers.</p>
-            </div>
-
+            <?php endif; ?>
         </div>
     </div>
 </section>

@@ -18,16 +18,14 @@
                 
                 if (Session::isLoggedIn()) {
                     $menuItems[] = 'Events';
-                    $links[] = '/activities';
-                    $menuItems[] = 'History';
-                    $links[] = '/volunteers/history'; // student/teacher
+                    $links[] = '/events';
                     if (Session::getUserRole() === 'admin') {
                         $menuItems[] = 'Dashboard';
                         $links[] = '/admin/dashboard';
                     }
                 } else {
                     $menuItems[] = 'Events';
-                    $links[] = '/activities';
+                    $links[] = '/events';
                 }
                 
                 $currentPath = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');

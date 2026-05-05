@@ -267,6 +267,55 @@ class UserController extends Controller
     }
 
     /**
+     * Update user role via AJAX (admin only)
+     */
+    public function updateRole(int $id): void
+    {
+        AuthMiddleware::handleRole('admin');
+
+        // Must be AJAX/JSON request
+        $input = json_decode(file_get_contents('php://input'), true);
+        $newRole = $input['role'] ?? '';
+
+        $validRoles = ['student', 'admin', 'teacher'];
+        if (!in_array($newRole, $validRoles)) {
+            $this->json(['success' => false, 'message' => 'Invalid role.'], 400);
+            return;
+        }
+
+        $user = $this->userModel->getById($id);
+        if (!$user) {
+            $this->json(['success' => false, 'message' => 'User not found.'], 404);
+            return;
+        }
+
+        $oldRole = $user['role'];
+
+        // Prevent removing last admin
+        if ($oldRole === 'admin' && $newRole !== 'admin') {
+            $adminCount = $this->db->queryOne("SELECT COUNT(*) as cnt FROM users WHERE role = 'admin' AND is_active = 1");
+            if (($adminCount['cnt'] ?? 0) <= 1) {
+                $this->json(['success' => false, 'message' => 'Cannot change role: this is the last admin account.'], 403);
+                return;
+            }
+        }
+
+        try {
+            $this->userModel->update($id, ['role' => $newRole]);
+
+            // Audit log
+            $this->db->execute(
+                "INSERT INTO role_audit_log (user_id, changed_by, old_role, new_role) VALUES (?, ?, ?, ?)",
+                [$id, Session::getUserId(), $oldRole, $newRole]
+            );
+
+            $this->json(['success' => true, 'message' => "Role changed from {$oldRole} to {$newRole}.", 'old_role' => $oldRole, 'new_role' => $newRole]);
+        } catch (\Exception $e) {
+            $this->json(['success' => false, 'message' => 'Error: ' . $e->getMessage()], 500);
+        }
+    }
+
+    /**
      * Profile page - show user info + event history
      */
     public function profile(): void

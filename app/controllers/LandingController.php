@@ -7,6 +7,7 @@
 namespace App\Controllers;
 
 use App\Core\Controller;
+use App\Models\News;
 
 class LandingController extends Controller
 {
@@ -15,35 +16,18 @@ class LandingController extends Controller
      */
     public function index(): void
     {
-        // Get upcoming activities
-        $activities = $this->getUpcomingActivities();
-        
         // Get statistics
         $stats = $this->getStatistics();
 
+        // Get latest news
+        $newsModel = new News();
+        $news = $newsModel->getLatest(4);
+
         $this->data['title'] = 'Home - PIC Social Activity';
-        $this->data['activities'] = $activities;
         $this->data['stats'] = $stats;
+        $this->data['news'] = $news;
 
         $this->render('landing/index');
-    }
-
-    /**
-     * Get upcoming activities
-     */
-    private function getUpcomingActivities(): array
-    {
-        $sql = "SELECT 
-                    a.*,
-                    u.name as creator_name,
-                    (SELECT COUNT(*) FROM volunteers WHERE activity_id = a.id) as volunteer_count
-                FROM activities a
-                LEFT JOIN users u ON a.created_by = u.id
-                WHERE a.status = 'upcoming' AND a.activity_date >= CURDATE()
-                ORDER BY a.activity_date ASC
-                LIMIT 6";
-
-        return $this->db->query($sql);
     }
 
     /**
@@ -62,11 +46,11 @@ class LandingController extends Controller
         $stats['total_teachers'] = $result['total'] ?? 0;
 
         // Total events
-        $result = $this->db->queryOne("SELECT COUNT(*) as total FROM activities");
+        $result = $this->db->queryOne("SELECT COUNT(*) as total FROM events");
         $stats['total_events'] = $result['total'] ?? 0;
 
-        // Total volunteer hours (estimated: completed volunteers * 2 hours)
-        $result = $this->db->queryOne("SELECT COUNT(*) as total FROM volunteers WHERE status = 'completed'");
+        // Total volunteer hours (estimated: total participants * 2 hours)
+        $result = $this->db->queryOne("SELECT COUNT(*) as total FROM event_participants");
         $stats['total_hours'] = ($result['total'] ?? 0) * 2;
 
         return $stats;

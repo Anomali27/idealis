@@ -111,7 +111,7 @@ class User
         $params = [];
 
         foreach ($data as $key => $value) {
-            if (in_array($key, ['name', 'email', 'role', 'nis', 'class', 'phone', 'avatar', 'is_active'])) {
+            if (in_array($key, ['name', 'email', 'role', 'nis', 'class', 'major', 'phone', 'avatar', 'is_active', 'password'])) {
                 $fields[] = "{$key} = ?";
                 $params[] = $value;
             }
