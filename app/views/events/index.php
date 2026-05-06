@@ -42,9 +42,12 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <?php if (!empty($events)): ?>
                 <?php foreach ($events as $event): ?>
-                <div class="group bg-white rounded-3xl overflow-hidden border border-gray-100 hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-1 transition-all duration-500" id="event-card-<?= $event['id'] ?>">
+                <div class="group relative bg-white rounded-3xl overflow-hidden border border-gray-100 hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-1 transition-all duration-500 flex flex-col h-full" id="event-card-<?= $event['id'] ?>">
+                    <!-- Full Card Link -->
+                    <a href="/events/<?= $event['id'] ?>" class="absolute inset-0 z-0"><span class="sr-only">View Event Details</span></a>
+
                     <!-- Event Image (Top) -->
-                    <a href="/events/<?= $event['id'] ?>" class="block h-52 relative overflow-hidden">
+                    <div class="block h-52 relative overflow-hidden flex-shrink-0 pointer-events-none">
                         <img src="<?= htmlspecialchars($event['image_url'] ?? '/assets/images/event/eco-exploration-project.png') ?>" 
                              alt="<?= htmlspecialchars($event['name']) ?>" 
                              class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
@@ -52,16 +55,16 @@
                         <div class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-primary shadow-sm">
                             <?= date('d M Y', strtotime($event['date'])) ?>
                         </div>
-                    </a>
+                    </div>
 
                     <!-- Event Content (Below Image) -->
-                    <div class="p-5 sm:p-6 flex flex-col justify-between">
+                    <div class="p-5 sm:p-6 flex flex-col flex-grow justify-between pointer-events-none">
                         <div>
-                            <a href="/events/<?= $event['id'] ?>" class="block">
-                                <h3 class="text-lg font-bold text-gray-900 font-poppins mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+                            <div class="block mb-2">
+                                <h3 class="text-lg font-bold text-gray-900 font-poppins line-clamp-2 group-hover:text-primary transition-colors">
                                     <?= htmlspecialchars($event['name']) ?>
                                 </h3>
-                            </a>
+                            </div>
                             <p class="text-gray-500 text-sm line-clamp-2 mb-4 leading-relaxed">
                                 <?= htmlspecialchars(mb_substr(strip_tags($event['description'] ?? ''), 0, 120)) ?>...
                             </p>
@@ -93,28 +96,15 @@
                                 </div>
                             </div>
                             <?php endif; ?>
-
-                            <!-- Top Donor Highlight -->
-                            <?php if (!empty($event['top_donor'])): ?>
-                            <div class="flex items-center gap-2 bg-amber-50 rounded-xl px-3 py-2 border border-amber-100 mb-4">
-                                <div class="w-7 h-7 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
-                                    <svg class="w-3.5 h-3.5 text-amber-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zM12 2a1 1 0 01.967.744L14.146 7.2 17.5 9.134a1 1 0 010 1.732l-3.354 1.935-1.18 4.455a1 1 0 01-1.933 0L9.854 12.8 6.5 10.866a1 1 0 010-1.732l3.354-1.935 1.18-4.455A1 1 0 0112 2z" clip-rule="evenodd"/></svg>
-                                </div>
-                                <div class="min-w-0">
-                                    <p class="text-xs text-amber-700 font-semibold truncate">🏆 <?= htmlspecialchars($event['top_donor']['donor_name']) ?></p>
-                                    <p class="text-xs text-amber-600">Rp <?= number_format($event['top_donor']['amount'], 0, ',', '.') ?></p>
-                                </div>
-                            </div>
-                            <?php endif; ?>
                         </div>
 
                         <!-- Actions -->
-                        <div class="flex gap-2 mt-2">
+                        <div class="mt-4 flex gap-2 pointer-events-auto relative z-10">
                             <a href="/events/<?= $event['id'] ?>" class="flex-grow py-2.5 bg-gray-50 hover:bg-primary text-primary hover:text-white border border-gray-200 hover:border-primary font-semibold rounded-xl text-center text-sm transition-all duration-300">
                                 View Details
                             </a>
                             <?php if ($isAdmin ?? false): ?>
-                            <a href="/events/<?= $event['id'] ?>/edit" class="px-4 py-2.5 bg-amber-50 hover:bg-amber-500 text-amber-600 hover:text-white border border-amber-200 hover:border-amber-500 font-semibold rounded-xl text-sm transition-all duration-300 flex items-center gap-1">
+                            <a href="/events/<?= $event['id'] ?>/edit" class="px-4 py-2.5 bg-amber-50 hover:bg-amber-500 text-amber-600 hover:text-white border border-amber-200 hover:border-amber-500 font-semibold rounded-xl text-sm transition-all duration-300 flex items-center justify-center gap-1">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                 Edit
                             </a>

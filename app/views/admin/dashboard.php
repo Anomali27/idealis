@@ -8,14 +8,8 @@ require_once dirname(__DIR__) . '/layouts/header.php';
 use App\Core\Session;
 
 // Extract data from controller
-$activityStats = $data['activityStats'] ?? [];
-$totalUsers = $data['totalUsers'] ?? 0;
-$pendingSuggestions = $data['pendingSuggestions'] ?? 0;
-$recentActivities = $data['recentActivities'] ?? [];
-$recentVolunteers = $data['recentVolunteers'] ?? [];
-$recentDonations = $data['recentDonations'] ?? [];
-$totalDonations = $data['totalDonations'] ?? 0;
-$totalVolunteers = $data['totalVolunteers'] ?? 0;
+$recentEvents = $data['recentEvents'] ?? [];
+$totalEvents = count($recentEvents); // roughly
 ?>
 
 <div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
@@ -29,8 +23,8 @@ $totalVolunteers = $data['totalVolunteers'] ?? 0;
                         Admin Dashboard</h1>
                     <p class="text-lg text-slate-600 mt-1">Manage your school's social activities & volunteers</p>
                 </div>
-                <!-- Top 4 Stat Cards -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 min-w-[320px]">
+                <!-- Top Stat Cards -->
+                <div class="grid grid-cols-2 gap-4 min-w-[320px]">
                     <!-- Total Users -->
                     <div
                         class="group bg-gradient-to-br from-blue-500 to-blue-600 text-white p-4 rounded-2xl shadow-lg hover:shadow-2xl transition-all cursor-pointer">
@@ -58,42 +52,8 @@ $totalVolunteers = $data['totalVolunteers'] ?? 0;
                                 </svg>
                             </div>
                             <div class="ml-3">
-                                <p class="text-sm opacity-90">Total Events</p>
-                                <p class="text-2xl font-bold"><?= $activityStats['total'] ?? 0 ?></p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Events Done -->
-                    <div
-                        class="group bg-gradient-to-br from-indigo-500 to-indigo-600 text-white p-4 rounded-2xl shadow-lg hover:shadow-2xl transition-all cursor-pointer">
-                        <div class="flex items-center">
-                            <div class="p-2 bg-white/20 rounded-xl">
-                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd"
-                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
-                                </svg>
-                            </div>
-                            <div class="ml-3">
-                                <p class="text-sm opacity-90">Events Done</p>
-                                <p class="text-2xl font-bold"><?= $activityStats['completed'] ?? 0 ?></p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Pending Approvals -->
-                    <div
-                        class="group bg-gradient-to-br from-orange-500 to-orange-600 text-white p-4 rounded-2xl shadow-lg hover:shadow-2xl transition-all cursor-pointer">
-                        <div class="flex items-center">
-                            <div class="p-2 bg-white/20 rounded-xl">
-                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd"
-                                        d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" />
-                                </svg>
-                            </div>
-                            <div class="ml-3">
-                                <p class="text-sm opacity-90">Pending Volunteers</p>
-                                <p class="text-2xl font-bold"><?= $totalVolunteers ?></p>
+                                <p class="text-sm opacity-90">Events Hosted</p>
+                                <p class="text-2xl font-bold"><?= $totalEvents ?></p>
                             </div>
                         </div>
                     </div>
@@ -125,30 +85,6 @@ $totalVolunteers = $data['totalVolunteers'] ?? 0;
                         </svg>
                         Users
                     </button>
-                    <button onclick="showSection('fundraisers')"
-                        class="w-full flex items-center p-4 rounded-xl hover:bg-green-50 hover:text-green-600 font-medium transition-all <?php echo ($_GET['tab'] ?? '') == 'fundraisers' ? 'bg-green-50 text-green-600 border-2 border-green-200 shadow-md' : ''; ?>">
-                        <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-                        </svg>
-                        Fundraisers
-                    </button>
-                    <button onclick="showSection('forms')"
-                        class="w-full flex items-center p-4 rounded-xl hover:bg-purple-50 hover:text-purple-600 font-medium transition-all <?php echo ($_GET['tab'] ?? '') == 'forms' ? 'bg-purple-50 text-purple-600 border-2 border-purple-200 shadow-md' : ''; ?>">
-                        <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-                        </svg>
-                        Forms
-                    </button>
-                    <button onclick="showSection('volunteers')"
-                        class="w-full flex items-center p-4 rounded-xl hover:bg-orange-50 hover:text-orange-600 font-medium transition-all <?php echo ($_GET['tab'] ?? '') == 'volunteers' ? 'bg-orange-50 text-orange-600 border-2 border-orange-200 shadow-md' : ''; ?>">
-                        <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 01 5.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                        </svg>
-                        Volunteers
-                    </button>
                 </nav>
             </div>
 
@@ -162,7 +98,7 @@ $totalVolunteers = $data['totalVolunteers'] ?? 0;
                             <p class="text-lg text-slate-600 mt-1">Manage all school social activities and volunteer
                                 events</p>
                         </div>
-                        <a href="/activities/create"
+                        <a href="/events/create"
                             class="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-8 py-4 rounded-2xl font-semibold shadow-lg hover:shadow-xl hover:from-emerald-600 hover:to-emerald-700 transition-all text-lg">
                             + Create New Event
                         </a>
@@ -171,7 +107,7 @@ $totalVolunteers = $data['totalVolunteers'] ?? 0;
                     <!-- Events Grid -->
                     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                         <!-- PHP LOOP STARTS HERE -->
-                        <?php if (empty($recentActivities)): ?>
+                        <?php if (empty($recentEvents)): ?>
                             <div class="col-span-full text-center py-16">
                                 <svg class="w-24 h-24 text-gray-300 mx-auto mb-6" fill="none" stroke="currentColor"
                                     viewBox="0 0 24 24">
@@ -182,57 +118,30 @@ $totalVolunteers = $data['totalVolunteers'] ?? 0;
                                 <p class="text-gray-500">Get started by creating your first school event.</p>
                             </div>
                         <?php else: ?>
-                            <?php foreach ($recentActivities as $activity): ?>
+                            <?php foreach ($recentEvents as $event): ?>
                                 <div
-                                    class="group bg-white rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl transition-all hover:-translate-y-2 border border-gray-100">
+                                    class="group bg-white rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl transition-all hover:-translate-y-2 border border-gray-100 flex flex-col">
                                     <!-- Event Image -->
                                     <div class="h-48 bg-gradient-to-br from-blue-400 to-indigo-500 relative overflow-hidden">
-                                        <img src="/assets/images/event/<?= htmlspecialchars($activity['cover_image'] ?? 'default.jpg') ?>"
-                                            alt="<?= htmlspecialchars($activity['title']) ?>"
+                                        <img src="<?= htmlspecialchars($event['image_url'] ?? '/assets/images/event/default.jpg') ?>"
+                                            alt="<?= htmlspecialchars($event['name']) ?>"
                                             class="w-full h-full object-cover group-hover:scale-105 transition-transform">
-                                        <div class="absolute top-4 right-4">
-                                            <span class="px-4 py-2 rounded-full text-xs font-bold bg-white/90 backdrop-blur-sm shadow-lg <?php
-                                            if ($activity['status'] == 'completed') {
-                                                echo 'text-green-700 bg-green-100';
-                                            } elseif ($activity['status'] == 'ongoing') {
-                                                echo 'text-orange-700 bg-orange-100';
-                                            } else {
-                                                echo 'text-blue-700 bg-blue-100';
-                                            }
-                                            ?>">
-                                                <?= ucfirst($activity['status']) ?>
-                                            </span>
-                                        </div>
                                     </div>
 
                                     <!-- Event Content -->
-                                    <div class="p-8">
+                                    <div class="p-8 flex-1 flex flex-col">
                                         <h3
                                             class="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors">
-                                            <?= htmlspecialchars($activity['title']) ?>
+                                            <?= htmlspecialchars($event['name']) ?>
                                         </h3>
-                                        <p class="text-slate-600 mb-6 line-clamp-2">
-                                            <?= htmlspecialchars(substr($activity['description'] ?? '', 0, 100)) ?>...
+                                        <p class="text-slate-600 mb-6 line-clamp-2 flex-1">
+                                            <?= htmlspecialchars(substr($event['description'] ?? '', 0, 100)) ?>...
                                         </p>
-                                        <div class="flex flex-wrap gap-2 mb-6 text-sm text-slate-500">
-                                            <span>📍 <?= htmlspecialchars($activity['location']) ?></span>
-                                            <span>📅 <?= date('M d, Y', strtotime($activity['activity_date'])) ?></span>
-                                        </div>
-                                        <div class="flex gap-3">
-                                            <a href="/activities/<?= $activity['id'] ?>/edit"
+                                        <div class="flex gap-3 mt-auto">
+                                            <a href="/events/<?= $event['id'] ?>"
                                                 class="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 px-6 rounded-xl font-semibold text-center hover:shadow-lg hover:from-blue-600 hover:to-blue-700 transition-all">
-                                                Edit Event
+                                                View / Edit
                                             </a>
-                                            <?php if ($activity['status'] == 'completed'): ?>
-                                                <form method="POST" action="/activities/<?= $activity['id'] ?>/delete"
-                                                    class="flex-0">
-                                                    <button type="submit"
-                                                        class="bg-gradient-to-r from-red-500 to-red-600 text-white py-3 px-6 rounded-xl font-semibold hover:shadow-lg hover:from-red-600 hover:to-red-700 transition-all"
-                                                        onclick="return confirm('Delete this completed event?')">
-                                                        Delete
-                                                    </button>
-                                                </form>
-                                            <?php endif; ?>
                                         </div>
                                     </div>
                                 </div>

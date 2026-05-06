@@ -24,8 +24,8 @@
                     Empowering students through quality education and active community service. Join us in building a better future together.
                 </p>
                 <div class="flex flex-col sm:flex-row gap-4">
-                    <a href="/activities" class="px-8 py-4 bg-primary text-white font-semibold rounded-xl hover:bg-primary-dark hover:-translate-y-1 transition-all duration-300 shadow-lg shadow-primary/30 text-center flex items-center justify-center gap-2">
-                        Find Activities
+                    <a href="/events" class="px-8 py-4 bg-primary text-white font-semibold rounded-xl hover:bg-primary-dark hover:-translate-y-1 transition-all duration-300 shadow-lg shadow-primary/30 text-center flex items-center justify-center gap-2">
+                        Find Events
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                     </a>
                     <?php if (isset($_SESSION['user'])): ?>

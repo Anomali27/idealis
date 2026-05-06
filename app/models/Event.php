@@ -36,9 +36,7 @@ class Event
         return $this->db->query($sql, [$limit]);
     }
 
-    /**
-     * Get event by ID with full details
-     */
+    /* Get event by ID with full details */
     public function getById(int $id): ?array
     {
         $sql = "SELECT 
@@ -53,9 +51,7 @@ class Event
         return $this->db->queryOne($sql, [$id]);
     }
 
-    /**
-     * Get top donors for an event (computed dynamically)
-     */
+    /* Get top donors for an event (computed dynamically)*/
     public function getTopDonors(int $eventId, int $limit = 5): array
     {
         $sql = "SELECT donor_name, donor_class, amount, message
@@ -67,12 +63,11 @@ class Event
         return $this->db->query($sql, [$eventId, $limit]);
     }
 
-    /**
-     * Get participants for an event
-     */
+    /* Get participants and their donations for an event */
     public function getParticipants(int $eventId): array
     {
-        $sql = "SELECT u.id, u.name, u.email, u.class, u.major, p.created_at as joined_at
+        $sql = "SELECT u.id, u.name, u.email, u.class, u.major, p.created_at as joined_at,
+                       (SELECT COALESCE(SUM(amount), 0) FROM event_donations ed WHERE ed.event_id = p.event_id AND ed.user_id = u.id) as donation_amount
                 FROM event_participants p
                 JOIN users u ON p.user_id = u.id
                 WHERE p.event_id = ?
@@ -81,9 +76,7 @@ class Event
         return $this->db->query($sql, [$eventId]);
     }
 
-    /**
-     * Check if a user is a participant
-     */
+    /* Check if a user is a participant*/
     public function isParticipant(int $eventId, int $userId): bool
     {
         $sql = "SELECT 1 FROM event_participants WHERE event_id = ? AND user_id = ?";
@@ -91,9 +84,7 @@ class Event
         return !empty($result);
     }
 
-    /**
-     * Add a participant
-     */
+    /* Add a participant */
     public function addParticipant(int $eventId, int $userId): bool
     {
         try {
@@ -104,9 +95,7 @@ class Event
         }
     }
 
-    /**
-     * Create new event
-     */
+    /* Create new event */
     public function create(array $data): int
     {
         $sql = "INSERT INTO {$this->table} 
@@ -126,9 +115,7 @@ class Event
         return $this->db->lastInsertId();
     }
 
-    /**
-     * Update event
-     */
+    /* Update event */
     public function update(int $id, array $data): bool
     {
         $fields = [];

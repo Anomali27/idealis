@@ -3,6 +3,14 @@
 
 <!-- Event Detail Hero -->
 <section class="relative pt-20">
+    <!-- Back Button Overlay -->
+    <div class="absolute top-24 left-4 sm:left-8 lg:left-12 z-20">
+        <a href="/events" class="inline-flex items-center gap-2 px-4 py-2 bg-black/40 hover:bg-black/60 backdrop-blur-md border border-white/20 text-white font-medium rounded-xl transition-all shadow-lg text-sm">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+            Back
+        </a>
+    </div>
+
     <div class="relative h-[40vh] md:h-[50vh] overflow-hidden">
         <img src="<?= htmlspecialchars($event['image_url'] ?? '/assets/images/event/eco-exploration-project.png') ?>" 
              alt="<?= htmlspecialchars($event['name']) ?>" 
@@ -85,7 +93,7 @@
                 </div>
 
                 <!-- Description -->
-                <div class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
+                <div class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm mb-8">
                     <h2 class="text-2xl font-bold text-gray-900 font-poppins mb-6 flex items-center gap-3">
                         <div class="w-1 h-8 bg-primary rounded-full"></div>
                         About This Event
@@ -95,15 +103,68 @@
                     </div>
                 </div>
 
+                <!-- Participants List -->
+                <div class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm mb-8">
+                    <h2 class="text-2xl font-bold text-gray-900 font-poppins mb-6 flex items-center gap-3">
+                        <div class="w-1 h-8 bg-primary rounded-full"></div>
+                        Participants
+                    </h2>
+                    
+                    <?php if (!empty($participants)): ?>
+                        <div class="overflow-x-auto rounded-xl border border-gray-100">
+                            <table class="w-full text-left text-sm text-gray-600">
+                                <thead class="bg-gray-50 text-gray-900 font-semibold uppercase tracking-wider">
+                                    <tr>
+                                        <th class="px-6 py-4 rounded-tl-xl whitespace-nowrap">Name</th>
+                                        <th class="px-6 py-4 whitespace-nowrap">Donation Amount</th>
+                                        <th class="px-6 py-4 rounded-tr-xl whitespace-nowrap">Class</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-100">
+                                    <?php foreach ($participants as $participant): ?>
+                                    <tr class="hover:bg-gray-50/50 transition-colors">
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold flex-shrink-0">
+                                                    <?= htmlspecialchars(substr($participant['name'], 0, 1)) ?>
+                                                </div>
+                                                <span class="font-medium text-gray-900"><?= htmlspecialchars($participant['name']) ?></span>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <?php if (($participant['donation_amount'] ?? 0) > 0): ?>
+                                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 font-medium text-xs border border-emerald-100">
+                                                    Rp <?= number_format($participant['donation_amount'], 0, ',', '.') ?>
+                                                </span>
+                                            <?php else: ?>
+                                                <span class="text-gray-400 italic text-xs">-</span>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td class="px-6 py-4 text-gray-600 font-medium text-sm whitespace-nowrap">
+                                            <?= htmlspecialchars($participant['class'] ?? 'N/A') ?>
+                                        </td>
+                                    </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    <?php else: ?>
+                        <div class="text-center py-8">
+                            <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                            </div>
+                            <p class="text-gray-500 font-medium">No participants yet.</p>
+                            <p class="text-sm text-gray-400 mt-1">Be the first to join this event!</p>
+                        </div>
+                    <?php endif; ?>
+                </div>
+
                 <!-- Admin Actions -->
                 <?php if ($isAdmin ?? false): ?>
                 <div class="flex gap-3">
                     <a href="/events/<?= $event['id'] ?>/edit" class="inline-flex items-center gap-2 px-6 py-3 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-xl transition-all shadow-lg shadow-amber-500/20">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                         Edit Event
-                    </a>
-                    <a href="/events" class="inline-flex items-center gap-2 px-6 py-3 bg-white text-gray-700 border border-gray-200 font-semibold rounded-xl hover:bg-gray-50 transition-all">
-                        ← Back to Events
                     </a>
                 </div>
                 <?php endif; ?>
@@ -174,11 +235,6 @@
                 </div>
                 <?php endif; ?>
 
-                <!-- Back Button -->
-                <a href="/events" class="flex items-center justify-center gap-2 w-full py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl transition-all">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-                    Back to All Events
-                </a>
             </div>
         </div>
     </div>

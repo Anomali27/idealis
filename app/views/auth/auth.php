@@ -33,6 +33,8 @@ $showRegister = $_GET['mode'] ?? 'login';
     
     <link rel="stylesheet" href="/css/style.css">
     
+    
+    
     <style>
         /* Reset & Base */
         * {
