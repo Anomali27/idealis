@@ -29,8 +29,8 @@
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                     </a>
                     <?php if (isset($_SESSION['user'])): ?>
-                    <a href="/dashboard" class="px-8 py-4 bg-white text-gray-800 font-semibold rounded-xl border border-gray-200 hover:border-primary hover:text-primary hover:-translate-y-1 transition-all duration-300 shadow-sm text-center">
-                        My Dashboard
+                    <a href="/history" class="px-8 py-4 bg-white text-gray-800 font-semibold rounded-xl border border-gray-200 hover:border-primary hover:text-primary hover:-translate-y-1 transition-all duration-300 shadow-sm text-center">
+                        My Impact History
                     </a>
                     <?php else: ?>
                     <a href="/auth/login" class="px-8 py-4 bg-white text-gray-800 font-semibold rounded-xl border border-gray-200 hover:border-primary hover:text-primary hover:-translate-y-1 transition-all duration-300 shadow-sm text-center">

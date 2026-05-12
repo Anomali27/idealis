@@ -56,7 +56,6 @@ class UserController extends Controller
 
         $this->data['title'] = 'Create User - PIC Social Activity';
         $this->data['roles'] = User::getRoles();
-        $this->data['csrf_token'] = Session::getCsrfToken();
 
         $this->render('admin/users/create');
     }
@@ -68,14 +67,6 @@ class UserController extends Controller
     {
         // Require admin role
         AuthMiddleware::handleRole('admin');
-
-        // Validate CSRF token
-        $csrfToken = $_POST['csrf_token'] ?? '';
-        if (!Session::validateCsrfToken($csrfToken)) {
-            Session::setFlash('error', 'Invalid security token.');
-            $this->redirectTo('/admin/users/create');
-            return;
-        }
 
         // Validate input
         $errors = $this->validateUser($_POST);
@@ -147,7 +138,6 @@ class UserController extends Controller
         $this->data['title'] = 'Edit User - PIC Social Activity';
         $this->data['user'] = $user;
         $this->data['roles'] = User::getRoles();
-        $this->data['csrf_token'] = Session::getCsrfToken();
 
         $this->render('admin/users/edit');
     }
@@ -164,14 +154,6 @@ class UserController extends Controller
 
         if (!$user) {
             $this->error404('User not found');
-            return;
-        }
-
-        // Validate CSRF token
-        $csrfToken = $_POST['csrf_token'] ?? '';
-        if (!Session::validateCsrfToken($csrfToken)) {
-            Session::setFlash('error', 'Invalid security token.');
-            $this->redirectTo('/admin/users/' . $id . '/edit');
             return;
         }
 
@@ -355,6 +337,128 @@ class UserController extends Controller
         $this->data['roleLabel'] = User::getRoleLabel($user['role'] ?? '');
 
         $this->render('history/index');
+    }
+
+    /**
+     * User Profile Page with Rank & Badge System
+     */
+    public function profile(): void
+    {
+        AuthMiddleware::handle();
+
+        $userId = Session::getUserId();
+        $userModel = new User();
+        $eventModel = new \App\Models\Event();
+        
+        $user = $userModel->getById($userId);
+        $events = $eventModel->getUserEvents($userId);
+        $donations = $eventModel->getUserDonations($userId);
+
+        $totalEvents = count($events);
+        $totalDonations = array_reduce($donations, function($carry, $item) {
+            return $carry + ($item['amount'] ?? 0);
+        }, 0);
+
+        // Rank Logic
+        $rankInfo = $this->calculateRank($totalEvents);
+
+        // Rank Standing
+        $standingPercent = max(1, 100 - ($totalEvents * 9));
+        if ($totalEvents == 0) $standingPercent = 100;
+
+        $this->data['title'] = 'User Profile - PIC Social Activity';
+        $this->data['user'] = $user;
+        $this->data['totalEvents'] = $totalEvents;
+        $this->data['totalDonations'] = $totalDonations;
+        $this->data['rankInfo'] = $rankInfo;
+        $this->data['standingPercent'] = $standingPercent;
+
+        $this->render('profile/index');
+    }
+
+    private function calculateRank(int $totalEvents): array
+    {
+        $eventsCount = min(10, $totalEvents);
+        
+        if ($eventsCount >= 9) {
+            return [
+                'name' => 'Diamond',
+                'color' => 'cyan',
+                'gradient' => 'from-cyan-400 to-blue-600',
+                'border' => 'border-cyan-400',
+                'glow' => 'shadow-cyan-400/50',
+                'text' => 'text-cyan-400',
+                'blob' => 'bg-cyan-500',
+                'next_threshold' => 10,
+                'progress' => 100,
+                'message' => 'You reached the highest rank!'
+            ];
+        } elseif ($eventsCount >= 7) {
+            return [
+                'name' => 'Ascendant',
+                'color' => 'purple',
+                'gradient' => 'from-purple-400 to-indigo-600',
+                'border' => 'border-purple-400',
+                'glow' => 'shadow-purple-400/50',
+                'text' => 'text-purple-400',
+                'blob' => 'bg-purple-500',
+                'next_threshold' => 9,
+                'progress' => (($eventsCount - 7) / 2) * 100,
+                'message' => 'Only ' . (9 - $eventsCount) . ' more event(s) until you reach Diamond!'
+            ];
+        } elseif ($eventsCount >= 5) {
+            return [
+                'name' => 'Gold',
+                'color' => 'yellow',
+                'gradient' => 'from-yellow-400 to-orange-500',
+                'border' => 'border-yellow-400',
+                'glow' => 'shadow-yellow-400/50',
+                'text' => 'text-yellow-400',
+                'blob' => 'bg-yellow-500',
+                'next_threshold' => 7,
+                'progress' => (($eventsCount - 5) / 2) * 100,
+                'message' => 'Only ' . (7 - $eventsCount) . ' more event(s) until you reach Ascendant!'
+            ];
+        } elseif ($eventsCount >= 3) {
+            return [
+                'name' => 'Silver',
+                'color' => 'gray',
+                'gradient' => 'from-gray-300 to-gray-500',
+                'border' => 'border-gray-300',
+                'glow' => 'shadow-gray-400/50',
+                'text' => 'text-gray-300',
+                'blob' => 'bg-gray-500',
+                'next_threshold' => 5,
+                'progress' => (($eventsCount - 3) / 2) * 100,
+                'message' => 'Only ' . (5 - $eventsCount) . ' more event(s) until you reach Gold!'
+            ];
+        } elseif ($eventsCount >= 1) {
+            return [
+                'name' => 'Bronze',
+                'color' => 'orange',
+                'gradient' => 'from-orange-400 to-red-500',
+                'border' => 'border-orange-400',
+                'glow' => 'shadow-orange-400/50',
+                'text' => 'text-orange-400',
+                'blob' => 'bg-orange-500',
+                'next_threshold' => 3,
+                'progress' => (($eventsCount - 1) / 2) * 100,
+                'message' => 'Only ' . (3 - $eventsCount) . ' more event(s) until you reach Silver!'
+            ];
+        } else {
+            return [
+                'name' => 'Unranked',
+                'color' => 'slate',
+                'gradient' => 'from-slate-400 to-slate-600',
+                'border' => 'border-slate-400',
+                'glow' => 'shadow-slate-400/50',
+                'text' => 'text-slate-400',
+                'blob' => 'bg-slate-500',
+                'next_threshold' => 1,
+                'progress' => 0,
+                'message' => 'Join your first event to reach Bronze rank!'
+            ];
+        }
     }
 
     /**

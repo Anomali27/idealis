@@ -60,7 +60,6 @@ class SuggestionController extends Controller
 
         $this->data['title'] = 'Submit Suggestion - PIC Social Activity';
         $this->data['categories'] = Suggestion::getCategories();
-        $this->data['csrf_token'] = Session::getCsrfToken();
 
         $this->render('suggestions/create');
     }
@@ -72,14 +71,6 @@ class SuggestionController extends Controller
     {
         // Require login
         AuthMiddleware::handle();
-
-        // Validate CSRF token
-        $csrfToken = $_POST['csrf_token'] ?? '';
-        if (!Session::validateCsrfToken($csrfToken)) {
-            Session::setFlash('error', 'Invalid security token.');
-            $this->redirectTo('/suggestions/create');
-            return;
-        }
 
         // Validate input
         $errors = $this->validateSuggestion($_POST);
@@ -175,14 +166,6 @@ class SuggestionController extends Controller
 
         if (!$suggestion) {
             $this->error404('Suggestion not found');
-            return;
-        }
-
-        // Validate CSRF token
-        $csrfToken = $_POST['csrf_token'] ?? '';
-        if (!Session::validateCsrfToken($csrfToken)) {
-            Session::setFlash('error', 'Invalid security token.');
-            $this->redirectTo('/suggestions');
             return;
         }
 

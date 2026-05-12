@@ -66,6 +66,7 @@ $router->add('GET', '/student', 'StudentController', 'index');
 $router->add('GET', '/student/{id}', 'StudentController', 'show');
 $router->add('GET', '/student/dashboard', 'StudentController', 'dashboard');
 $router->add('GET', '/history', 'UserController', 'history');
+$router->add('GET', '/profile', 'UserController', 'profile');
 
 // =====================================================
 // EVENT ROUTES (New Events & News System)
