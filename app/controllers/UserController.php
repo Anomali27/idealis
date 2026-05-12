@@ -316,25 +316,45 @@ class UserController extends Controller
     }
 
     /**
-     * Profile page - show user info + event history
+     * History page - show user info + event history
      */
-    public function profile(): void
+    public function history(): void
     {
         AuthMiddleware::handle();
 
         $userId = Session::getUserId();
         $userModel = new User();
-        $activityModel = new Activity();
+        $eventModel = new \App\Models\Event();
         
         $user = $userModel->getById($userId);
-        $activities = $activityModel->getAll(); // Fake history from activities
+        $events = $eventModel->getUserEvents($userId);
+        $donations = $eventModel->getUserDonations($userId);
 
-        $this->data['title'] = 'Profile & Settings - PIC Social Activity';
+        // Calculate stats
+        $totalEvents = count($events);
+        $totalDonations = array_reduce($donations, function($carry, $item) {
+            return $carry + ($item['amount'] ?? 0);
+        }, 0);
+        
+        // Calculate volunteer hours (assume 5 hours per completed event)
+        $totalVolunteerHours = 0;
+        $today = date('Y-m-d');
+        foreach ($events as $event) {
+            if ($event['date'] < $today) {
+                $totalVolunteerHours += 5;
+            }
+        }
+
+        $this->data['title'] = 'User Activity & Donation History - PIC Social Activity';
         $this->data['user'] = $user;
-        $this->data['activities'] = $activities;
+        $this->data['events'] = $events;
+        $this->data['donations'] = $donations;
+        $this->data['totalEvents'] = $totalEvents;
+        $this->data['totalVolunteerHours'] = $totalVolunteerHours;
+        $this->data['totalDonations'] = $totalDonations;
         $this->data['roleLabel'] = User::getRoleLabel($user['role'] ?? '');
 
-        $this->render('profile/index');
+        $this->render('history/index');
     }
 
     /**

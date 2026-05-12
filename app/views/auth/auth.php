@@ -6,7 +6,7 @@ if (\App\Core\Session::isLoggedIn()) {
         'admin' => '/admin/dashboard',
         'committee' => '/committee/dashboard',
         'student' => '/student/dashboard',
-        'teacher' => '/teacher/dashboard'
+        'teacher' => '/teacher/dashboad'
     ];
     $redirect = $redirects[$role] ?? '/dashboard';
     header('Location: ' . $redirect);

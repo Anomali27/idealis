@@ -19,6 +19,8 @@
                 if (Session::isLoggedIn()) {
                     $menuItems[] = 'Events';
                     $links[] = '/events';
+                    $menuItems[] = 'History';
+                    $links[] = '/history';
                     if (Session::getUserRole() === 'admin') {
                         $menuItems[] = 'Dashboard';
                         $links[] = '/admin/dashboard';
@@ -70,7 +72,7 @@ $user = Session::getUser();
                                 </button>
                             <!-- Dropdown -->
                             <div id="dropdown-menu" class="absolute right-0 md:right-2 top-full mt-2 w-48 bg-white/90 backdrop-blur-md shadow-xl rounded-xl py-2 opacity-0 invisible transform scale-95 transition-all duration-200 origin-top-right z-50 hidden">
-                                <a href="/profile" class="block px-4 py-2 text-gray-800 hover:bg-gray-100 rounded-lg font-medium transition-colors">Settings</a>
+                                <a href="/history" class="block px-4 py-2 text-gray-800 hover:bg-gray-100 rounded-lg font-medium transition-colors">History</a>
 <a href="/auth/logout" class="block px-4 py-2 text-gray-800 hover:bg-gray-100 rounded-lg font-medium transition-colors">Logout</a>
                             </div>
                         </div>
@@ -93,13 +95,13 @@ $user = Session::getUser();
     <div id="mobile-menu" class="hidden md:hidden bg-primary-dark/95 backdrop-blur-sm">
         <div class="px-2 pt-2 pb-3 space-y-1">
 <a href="/" class="block px-3 py-2 rounded-md <?php echo ($currentPath === '') ? 'bg-primary-light text-white' : 'text-white hover:bg-white/10'; ?> font-medium">Home</a>
-<a href="/activities" class="block px-3 py-2 rounded-md <?php echo ($currentPath === 'activities') ? 'bg-primary-light text-white' : 'text-white hover:bg-white/10'; ?> font-medium">Events</a>
+<a href="/activities" class="block px-3 py-2 rounded-md <?php echo ($currentPath === 'activities' || $currentPath === 'events') ? 'bg-primary-light text-white' : 'text-white hover:bg-white/10'; ?> font-medium">Events</a>
             <?php if (Session::isLoggedIn()): ?>
-<a href="/volunteers/history" class="block px-3 py-2 rounded-md <?php echo ($currentPath === 'volunteers/history') ? 'bg-primary-light text-white' : 'text-white hover:bg-white/10'; ?> font-medium">History</a>
+<a href="/history" class="block px-3 py-2 rounded-md <?php echo ($currentPath === 'history') ? 'bg-primary-light text-white' : 'text-white hover:bg-white/10'; ?> font-medium">History</a>
                 <?php if (Session::getUserRole() === 'admin'): ?>
 <a href="/admin/dashboard" class="block px-3 py-2 rounded-md <?php echo ($currentPath === 'admin/dashboard') ? 'bg-primary-light text-white' : 'text-white hover:bg-white/10'; ?> font-medium">Dashboard</a>
                 <?php endif; ?>
-                <a href="/profile" class="block px-3 py-2 rounded-md text-white hover:bg-white/10 font-medium"><?php echo htmlspecialchars($userName ?? 'Profile'); ?></a>
+                <a href="/history" class="block px-3 py-2 rounded-md text-white hover:bg-white/10 font-medium"><?php echo htmlspecialchars($userName ?? 'History'); ?></a>
 <a href="/auth/logout" class="block px-3 py-2 rounded-md text-white hover:bg-white/10 font-medium">Logout</a>
             <?php else: ?>
                 <a href="/auth/login" class="block px-3 py-2 rounded-md text-white hover:bg-white/10 font-medium">Login</a>

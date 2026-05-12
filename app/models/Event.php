@@ -180,4 +180,30 @@ class Event
         $sql = "SELECT * FROM event_donations WHERE event_id = ? ORDER BY amount DESC";
         return $this->db->query($sql, [$eventId]);
     }
+
+    /**
+     * Get events user has joined
+     */
+    public function getUserEvents(int $userId): array
+    {
+        $sql = "SELECT e.*, p.created_at as joined_at 
+                FROM event_participants p
+                JOIN {$this->table} e ON p.event_id = e.id
+                WHERE p.user_id = ?
+                ORDER BY e.date DESC";
+        return $this->db->query($sql, [$userId]);
+    }
+
+    /**
+     * Get user donations
+     */
+    public function getUserDonations(int $userId): array
+    {
+        $sql = "SELECT d.*, e.name as event_name 
+                FROM event_donations d
+                JOIN {$this->table} e ON d.event_id = e.id
+                WHERE d.user_id = ?
+                ORDER BY d.id DESC";
+        return $this->db->query($sql, [$userId]);
+    }
 }

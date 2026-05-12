@@ -199,7 +199,7 @@
                     $colorSet = $categoryColors[$cat] ?? ['bg' => 'bg-gray-500', 'hover' => 'group-hover:text-gray-300'];
                     $isStaggered = ($staggerIndex % 2 === 1);
                 ?>
-                <div class="group <?= $isStaggered ? 'md:mt-12' : '' ?>">
+                <div class="group <?= $isStaggered ? 'md:mt-12' : '' ?> cursor-pointer" onclick="window.location.href='/news/<?= $newsItem['id'] ?>'">
                     <div class="relative h-64 md:h-80 rounded-3xl overflow-hidden shadow-lg mb-6">
                         <img src="<?= htmlspecialchars($newsItem['image_url'] ?? '') ?>" 
                              alt="<?= htmlspecialchars($newsItem['title']) ?>" 
