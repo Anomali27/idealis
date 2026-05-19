@@ -77,7 +77,7 @@ class SuggestionController extends Controller
 
         if (!empty($errors)) {
             Session::setFlash('error', implode('<br>', $errors));
-            $this->redirectTo('/suggestions/create');
+            $this->redirectTo('/suggestion');
             return;
         }
 
@@ -94,14 +94,14 @@ class SuggestionController extends Controller
 
             if ($suggestionId > 0) {
                 Session::setFlash('success', 'Thank you for your suggestion! We will review it shortly.');
-                $this->redirectTo('/suggestions/history');
+                $this->redirectTo('/history?tab=suggestions');
             } else {
                 Session::setFlash('error', 'Failed to submit suggestion.');
-                $this->redirectTo('/suggestions/create');
+                $this->redirectTo('/suggestion');
             }
         } catch (\Exception $e) {
             Session::setFlash('error', 'Error: ' . $e->getMessage());
-            $this->redirectTo('/suggestions/create');
+            $this->redirectTo('/suggestion');
         }
     }
 

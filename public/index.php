@@ -78,6 +78,8 @@ $router->add('POST', '/events/{id}/update', 'EventController', 'update');
 $router->add('POST', '/events/{id}/join', 'EventController', 'join');
 $router->add('POST', '/events/{id}/donate', 'EventController', 'donate');
 
+$router->add('GET', '/api/events/recommended', 'EventController', 'apiRecommended');
+
 $router->add('GET', '/news/{id}', 'NewsController', 'show');
 
 // =====================================================
@@ -91,9 +93,8 @@ $router->add('POST', '/api/users/{id}/role', 'UserController', 'updateRole');
 // SUGGESTION ROUTES
 // =====================================================
 $router->add('GET', '/suggestions', 'SuggestionController', 'index');
-$router->add('GET', '/suggestions/create', 'SuggestionController', 'create');
+$router->add('GET', '/suggestion', 'SuggestionController', 'create');
 $router->add('POST', '/suggestions/store', 'SuggestionController', 'store');
-$router->add('GET', '/suggestions/history', 'SuggestionController', 'history');
 $router->add('GET', '/suggestions/{id}', 'SuggestionController', 'show');
 $router->add('POST', '/suggestions/{id}/respond', 'SuggestionController', 'respond');
 $router->add('GET', '/suggestions/{id}/implement', 'SuggestionController', 'implement');

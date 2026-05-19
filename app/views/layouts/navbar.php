@@ -21,6 +21,14 @@
                     $links[] = '/events';
                     $menuItems[] = 'History';
                     $links[] = '/history';
+                    if (in_array(Session::getUserRole(), ['admin', 'committee'])) {
+                        $menuItems[] = 'Suggestions';
+                        $links[] = '/suggestions';
+                    } else {
+                        $menuItems[] = 'Suggestions';
+                        $links[] = '/suggestion';
+                    }
+
                     if (Session::getUserRole() === 'admin') {
                         $menuItems[] = 'Dashboard';
                         $links[] = '/admin/dashboard';
@@ -98,10 +106,14 @@ $user = Session::getUser();
 <a href="/activities" class="block px-3 py-2 rounded-md <?php echo ($currentPath === 'activities' || $currentPath === 'events') ? 'bg-primary-light text-white' : 'text-white hover:bg-white/10'; ?> font-medium">Events</a>
             <?php if (Session::isLoggedIn()): ?>
 <a href="/history" class="block px-3 py-2 rounded-md <?php echo ($currentPath === 'history') ? 'bg-primary-light text-white' : 'text-white hover:bg-white/10'; ?> font-medium">History</a>
+                <?php if (in_array(Session::getUserRole(), ['admin', 'committee'])): ?>
+<a href="/suggestions" class="block px-3 py-2 rounded-md <?php echo ($currentPath === 'suggestions') ? 'bg-primary-light text-white' : 'text-white hover:bg-white/10'; ?> font-medium">Suggestions</a>
+                <?php else: ?>
+<a href="/suggestion" class="block px-3 py-2 rounded-md <?php echo ($currentPath === 'suggestion') ? 'bg-primary-light text-white' : 'text-white hover:bg-white/10'; ?> font-medium">Suggestions</a>
+                <?php endif; ?>
                 <?php if (Session::getUserRole() === 'admin'): ?>
 <a href="/admin/dashboard" class="block px-3 py-2 rounded-md <?php echo ($currentPath === 'admin/dashboard') ? 'bg-primary-light text-white' : 'text-white hover:bg-white/10'; ?> font-medium">Dashboard</a>
                 <?php endif; ?>
-                <a href="/history" class="block px-3 py-2 rounded-md text-white hover:bg-white/10 font-medium"><?php echo htmlspecialchars($userName ?? 'History'); ?></a>
 <a href="/auth/logout" class="block px-3 py-2 rounded-md text-white hover:bg-white/10 font-medium">Logout</a>
             <?php else: ?>
                 <a href="/auth/login" class="block px-3 py-2 rounded-md text-white hover:bg-white/10 font-medium">Login</a>

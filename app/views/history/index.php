@@ -59,13 +59,16 @@
         </div>
 
         <!-- Interactive Tabs -->
-        <div class="mb-8 border-b border-gray-200">
-            <nav class="flex space-x-8" aria-label="Tabs">
+        <div class="mb-8 border-b border-gray-200 overflow-x-auto">
+            <nav class="flex space-x-8 min-w-max" aria-label="Tabs">
                 <button onclick="switchTab('events')" id="tab-events" class="tab-btn border-primary text-primary whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg">
                     My Events
                 </button>
                 <button onclick="switchTab('donations')" id="tab-donations" class="tab-btn border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg transition-colors">
                     My Donations
+                </button>
+                <button onclick="switchTab('suggestions')" id="tab-suggestions" class="tab-btn border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg transition-colors">
+                    My Suggestions
                 </button>
             </nav>
         </div>
@@ -193,6 +196,79 @@
             <?php endif; ?>
         </div>
 
+        <!-- Tab Content: My Suggestions -->
+        <div id="content-suggestions" class="tab-content hidden">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+                <h2 class="text-2xl font-bold text-gray-900 font-poppins">Your Suggestion History</h2>
+                <a href="/suggestion" class="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white font-semibold rounded-xl hover:bg-primary-dark transition-all shadow-lg shadow-primary/30 shrink-0">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    New Suggestion
+                </a>
+            </div>
+
+            <?php if (empty($suggestions)): ?>
+                <div class="text-center py-16 px-4 bg-white rounded-3xl shadow-sm border border-gray-100">
+                    <div class="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 font-poppins mb-2">No Suggestions Yet</h3>
+                    <p class="text-gray-500 mb-8 max-w-md mx-auto">You haven't submitted any suggestions yet. Share your ideas with us to help improve the PIC community!</p>
+                    <a href="/suggestion" class="inline-block px-8 py-3.5 bg-primary text-white font-semibold rounded-xl hover:bg-primary-dark transition-all shadow-lg shadow-primary/30">
+                        Submit a Suggestion
+                    </a>
+                </div>
+            <?php else: ?>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <?php foreach ($suggestions as $suggestion): ?>
+                        <?php 
+                            // Determine status colors
+                            $status = strtolower($suggestion['status']);
+                            $statusClass = 'bg-gray-100 text-gray-700'; // default
+                            if ($status === 'pending') $statusClass = 'bg-amber-100 text-amber-700';
+                            if ($status === 'responded') $statusClass = 'bg-blue-100 text-blue-700';
+                            if ($status === 'implemented') $statusClass = 'bg-emerald-100 text-emerald-700';
+                            if ($status === 'rejected') $statusClass = 'bg-red-100 text-red-700';
+                        ?>
+                        <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:border-primary/30 hover:shadow-lg transition-all duration-300 flex flex-col h-full group">
+                            <div class="flex justify-between items-start mb-4 gap-2">
+                                <span class="px-3 py-1 bg-gray-50 border border-gray-200 text-gray-600 text-xs font-semibold rounded-lg font-poppins">
+                                    <?= htmlspecialchars(ucfirst($suggestion['category'] ?? 'General')) ?>
+                                </span>
+                                <span class="px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-lg <?= $statusClass ?>">
+                                    <?= htmlspecialchars(ucfirst($status)) ?>
+                                </span>
+                            </div>
+                            
+                            <h3 class="text-lg font-bold text-gray-900 font-poppins mb-2 group-hover:text-primary transition-colors">
+                                <?= htmlspecialchars($suggestion['title']) ?>
+                            </h3>
+                            
+                            <p class="text-gray-600 text-sm leading-relaxed mb-6 flex-1">
+                                <?= htmlspecialchars(substr($suggestion['description'], 0, 150)) ?><?= (strlen($suggestion['description']) > 150) ? '...' : '' ?>
+                            </p>
+                            
+                            <div class="flex items-center text-sm text-gray-500 font-medium mb-4">
+                                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                <?= date('d M Y', strtotime($suggestion['created_at'])) ?>
+                            </div>
+
+                            <?php if (!empty($suggestion['response'])): ?>
+                                <div class="mt-auto bg-blue-50 border border-blue-100 rounded-xl p-4">
+                                    <div class="flex items-center gap-2 text-blue-800 font-semibold text-sm mb-1">
+                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                                        Admin Response
+                                    </div>
+                                    <p class="text-blue-900/80 text-sm italic">
+                                        "<?= htmlspecialchars($suggestion['response']) ?>"
+                                    </p>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </div>
+
     </div>
 </div>
 
@@ -230,6 +306,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const tab = params.get('tab');
     if (tab === 'donations') {
         switchTab('donations');
+    } else if (tab === 'suggestions') {
+        switchTab('suggestions');
     }
 });
 </script>

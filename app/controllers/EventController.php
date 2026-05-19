@@ -238,4 +238,33 @@ class EventController extends Controller
             $this->redirectTo('/events/' . $id . '/edit');
         }
     }
+
+    /**
+     * API: Get recommended events for the suggestion panel
+     */
+    public function apiRecommended(): void
+    {
+        header('Content-Type: application/json');
+        try {
+            // Get 3 upcoming or latest events
+            $events = $this->eventModel->getAll(3);
+            
+            // Format data
+            $formattedEvents = array_map(function($event) {
+                return [
+                    'id' => $event['id'],
+                    'name' => htmlspecialchars($event['name']),
+                    'date' => date('d M Y', strtotime($event['date'])),
+                    'description' => htmlspecialchars(mb_substr(strip_tags($event['description'] ?? ''), 0, 100)) . '...',
+                    'image_url' => htmlspecialchars($event['image_url'] ?? '/assets/images/placeholder.jpg'),
+                ];
+            }, $events);
+
+            echo json_encode(['status' => 'success', 'data' => $formattedEvents]);
+        } catch (\Exception $e) {
+            http_response_code(500);
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+        exit;
+    }
 }

@@ -124,4 +124,16 @@
     </div>
 </section>
 
-
+<!-- Floating Suggestion Button -->
+<a href="/suggestion" class="fixed bottom-10 right-8 z-[99] group flex items-center gap-3 bg-white text-primary font-semibold px-5 py-3 md:px-6 md:py-4 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_30px_rgba(var(--color-primary-rgb),0.3)] hover:-translate-y-1 border border-gray-100 transition-all duration-300 font-poppins">
+    <!-- Subtle Glow -->
+    <div class="absolute inset-0 bg-primary/20 rounded-full blur-xl group-hover:bg-primary/30 transition-all duration-300 -z-10"></div>
+    <div class="relative flex items-center justify-center w-8 h-8 md:w-10 md:h-10 bg-primary/10 rounded-full text-primary group-hover:scale-110 transition-transform duration-300">
+        <svg class="w-5 h-5 md:w-6 md:h-6 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM5 10a1 1 0 01-1 1H3a1 1 0 110-2h1a1 1 0 011 1zM8 16v-1h4v1a2 2 0 11-4 0zM12 14c.015-.34.208-.646.477-.859a4 4 0 10-4.954 0c.27.213.462.519.476.859h4.002z"></path>
+        </svg>
+    </div>
+    <span class="hidden md:block pr-2">Give Suggestion</span>
+    <!-- Notification Dot -->
+    <span class="absolute top-0 right-0 md:right-2 w-3 h-3 bg-red-500 border-2 border-white rounded-full"></span>
+</a>

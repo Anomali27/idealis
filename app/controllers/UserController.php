@@ -312,6 +312,10 @@ class UserController extends Controller
         $events = $eventModel->getUserEvents($userId);
         $donations = $eventModel->getUserDonations($userId);
 
+        $suggestionModel = new \App\Models\Suggestion();
+        $suggestions = $suggestionModel->getByUser($userId);
+        $totalSuggestions = $suggestionModel->getCountByUser($userId);
+
         // Calculate stats
         $totalEvents = count($events);
         $totalDonations = array_reduce($donations, function($carry, $item) {
@@ -331,9 +335,11 @@ class UserController extends Controller
         $this->data['user'] = $user;
         $this->data['events'] = $events;
         $this->data['donations'] = $donations;
+        $this->data['suggestions'] = $suggestions;
         $this->data['totalEvents'] = $totalEvents;
         $this->data['totalVolunteerHours'] = $totalVolunteerHours;
         $this->data['totalDonations'] = $totalDonations;
+        $this->data['totalSuggestions'] = $totalSuggestions;
         $this->data['roleLabel'] = User::getRoleLabel($user['role'] ?? '');
 
         $this->render('history/index');

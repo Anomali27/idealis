@@ -10,320 +10,123 @@ $categories = $data['categories'] ?? [];
 
 ?>
 
-<!-- Suggestion Page -->
-<div class="page-header">
-    <div class="container">
-        <h1>Submit a Suggestion</h1>
-        <p>Help us improve PIC social activities with your ideas</p>
+<!-- Header Section -->
+<section class="relative bg-gradient-to-br from-primary via-primary-dark to-primary pt-28 pb-16 overflow-hidden font-poppins">
+    <div class="absolute inset-0 opacity-10">
+        <div class="absolute top-0 right-0 w-96 h-96 bg-white/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+        <div class="absolute bottom-0 left-0 w-80 h-80 bg-white/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
     </div>
-</div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+        <span class="inline-block px-4 py-1.5 bg-white/10 backdrop-blur-sm text-white/90 text-sm font-semibold rounded-full border border-white/20 mb-6">
+            💡 We Value Your Ideas
+        </span>
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">
+            Submit a <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-amber-200">Suggestion</span>
+        </h1>
+        <p class="text-lg text-white/80 max-w-2xl mx-auto">
+            Help us improve PIC social activities with your ideas for new events or feedback on our current programs.
+        </p>
+    </div>
+</section>
 
-<div class="container">
-    <!-- Alerts -->
-    <?php if ($error): ?>
-        <div class="alert alert-error"><?= htmlspecialchars($error) ?></div>
-    <?php endif; ?>
-    
-    <?php if ($success): ?>
-        <div class="alert alert-success"><?= htmlspecialchars($success) ?></div>
-    <?php endif; ?>
+<!-- Content Section -->
+<section class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Alerts -->
+        <?php if ($error): ?>
+            <div class="mb-8 p-4 bg-red-50 border border-red-200 rounded-2xl flex items-center gap-3 text-red-600 font-medium">
+                <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <?= htmlspecialchars($error) ?>
+            </div>
+        <?php endif; ?>
+        
+        <?php if ($success): ?>
+            <div class="mb-8 p-4 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center gap-3 text-emerald-600 font-medium">
+                <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <?= htmlspecialchars($success) ?>
+            </div>
+        <?php endif; ?>
 
-    <div class="suggestion-container">
-        <div class="form-card">
-            <h2>Your Suggestion</h2>
-            
-            <form action="/suggestions/store" method="POST">
-                <div class="form-group">
-                    <label for="category">Category *</label>
-                    <select id="category" name="category" class="form-input" required>
-                        <option value="">Select a category</option>
-                        <?php foreach ($categories as $value => $label): ?>
-                            <option value="<?= $value ?>"><?= htmlspecialchars($label) ?></option>
-                        <?php endforeach; ?>
-                    </select>
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-10">
+            <!-- Form Card (Left/Main) -->
+            <div class="lg:col-span-3">
+                <div class="bg-white rounded-3xl p-8 sm:p-10 shadow-xl shadow-gray-200/50 border border-gray-100">
+                    <h2 class="text-2xl font-bold text-gray-900 font-poppins mb-8">Share Your Thoughts</h2>
+                    
+                    <form action="/suggestions/store" method="POST" class="space-y-6">
+
+                        <div>
+                            <label for="title" class="block text-sm font-semibold text-gray-700 mb-2">Title <span class="text-red-500">*</span></label>
+                            <input type="text" id="title" name="title" required placeholder="Brief title of your suggestion"
+                                   class="block w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-primary focus:border-primary transition-colors text-gray-900 placeholder-gray-400">
+                        </div>
+
+                        <div>
+                            <label for="description" class="block text-sm font-semibold text-gray-700 mb-2">Description <span class="text-red-500">*</span></label>
+                            <textarea id="description" name="description" rows="5" required
+                                      placeholder="Describe your suggestion in detail. What event would you like to see? How can it benefit the community?"
+                                      class="block w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-primary focus:border-primary transition-colors text-gray-900 placeholder-gray-400 resize-y"></textarea>
+                        </div>
+
+                        <div class="bg-blue-50 text-blue-800 p-4 rounded-xl flex gap-3 text-sm">
+                            <svg class="w-5 h-5 shrink-0 mt-0.5 text-blue-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                            <p class="leading-relaxed">Your suggestion will be reviewed by our committee team. We appreciate your input in making PIC activities better!</p>
+                        </div>
+
+                        <div class="flex items-center gap-4 pt-4 border-t border-gray-100">
+                            <button type="submit" class="px-8 py-3.5 bg-primary text-white font-semibold rounded-xl hover:bg-primary-dark transition-all shadow-lg shadow-primary/30 flex-1 md:flex-none text-center">
+                                Submit Suggestion
+                            </button>
+                            <a href="/events" class="px-8 py-3.5 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition-all flex-1 md:flex-none text-center">
+                                Cancel
+                            </a>
+                        </div>
+                    </form>
                 </div>
+            </div>
 
-                <div class="form-group">
-                    <label for="title">Title *</label>
-                    <input type="text" id="title" name="title" class="form-input" 
-                           placeholder="Brief title of your suggestion" required>
+            <!-- Info Card (Right/Sidebar) -->
+            <div class="lg:col-span-2">
+                <div class="bg-gradient-to-br from-white to-gray-50 rounded-3xl p-8 sm:p-10 shadow-xl shadow-gray-200/50 border border-gray-100 h-full">
+                    <h2 class="text-2xl font-bold text-gray-900 font-poppins mb-6">What can you suggest?</h2>
+                    
+                    <div class="space-y-8">
+                        <div class="flex gap-4">
+                            <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center shrink-0">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-gray-900 mb-1">New Event Ideas</h3>
+                                <p class="text-sm text-gray-600 leading-relaxed">Propose new social activities, community services, or workshops that could benefit our school.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center shrink-0">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-gray-900 mb-1">System Improvements</h3>
+                                <p class="text-sm text-gray-600 leading-relaxed">Suggest ways to improve our volunteer management and event registration process.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center shrink-0">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-gray-900 mb-1">Feedback</h3>
+                                <p class="text-sm text-gray-600 leading-relaxed">Share your thoughts about past activities, organizers, or any general feedback.</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-
-                <div class="form-group">
-                    <label for="description">Description *</label>
-                    <textarea id="description" name="description" class="form-input" rows="6"
-                              placeholder="Describe your suggestion in detail. What problem does it solve? How can it be implemented?" required></textarea>
-                </div>
-
-                <div class="form-info">
-                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
-                    </svg>
-                    <p>Your suggestion will be reviewed by our admin team. We appreciate your input in making PIC activities better!</p>
-                </div>
-
-                <div class="form-actions">
-                    <a href="/" class="btn btn-secondary">Cancel</a>
-                    <button type="submit" class="btn btn-primary">Submit Suggestion</button>
-                </div>
-            </form>
-        </div>
-
-        <div class="info-card">
-            <h2>What can you suggest?</h2>
-            <ul class="suggestion-types">
-                <li>
-                    <div class="type-icon">
-                        <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
-                            <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <h3>New Activity Ideas</h3>
-                        <p>Propose new social activities that could benefit the school community</p>
-                    </div>
-                </li>
-                <li>
-                    <div class="type-icon">
-                        <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
-                            <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
-                            <path d="M10.5 8.5a.5.5 0 0 1-1 0V5.707l-4.146 4.147a.5.5 0 0 1-.708-.708L8.793 5H6a.5.5 0 0 1 0-1h4.5a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V8.5z"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <h3>System Improvements</h3>
-                        <p>Suggest ways to improve our volunteer management system</p>
-                    </div>
-                </li>
-                <li>
-                    <div class="type-icon">
-                        <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
-                            <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
-                            <path fill-rule="evenodd" d="M5.216 14A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216z"/>
-                            <path d="M4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <h3>Feedback</h3>
-                        <p>Share your thoughts about past activities or our services</p>
-                    </div>
-                </li>
-                <li>
-                    <div class="type-icon">
-                        <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
-                            <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <h3>Other Ideas</h3>
-                        <p>Any other suggestions that could help our community</p>
-                    </div>
-                </li>
-            </ul>
+            </div>
         </div>
     </div>
-</div>
-
-<style>
-.page-header {
-    background: linear-gradient(135deg, #043460 0%, #0A4A80 100%);
-    color: white;
-    padding: 50px 0;
-    text-align: center;
-}
-
-.page-header h1 {
-    font-family: 'Kameron', serif;
-    font-size: 32px;
-    margin-bottom: 10px;
-}
-
-.page-header p {
-    font-family: 'Crimson Pro', serif;
-    font-size: 16px;
-    opacity: 0.9;
-}
-
-.suggestion-container {
-    display: grid;
-    grid-template-columns: 1.5fr 1fr;
-    gap: 30px;
-    margin: 40px 0 60px;
-}
-
-.form-card,
-.info-card {
-    background: white;
-    border-radius: 12px;
-    padding: 30px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-}
-
-.form-card h2,
-.info-card h2 {
-    font-family: 'Kanit', sans-serif;
-    font-size: 22px;
-    color: #043460;
-    margin-bottom: 25px;
-}
-
-.form-group {
-    margin-bottom: 20px;
-}
-
-.form-group label {
-    display: block;
-    font-family: 'Kanit', sans-serif;
-    font-size: 14px;
-    font-weight: 600;
-    color: #1E293B;
-    margin-bottom: 8px;
-}
-
-.form-input {
-    width: 100%;
-    padding: 12px 16px;
-    border: 2px solid #E2E8F0;
-    border-radius: 8px;
-    font-family: 'Crimson Pro', serif;
-    font-size: 16px;
-    color: #1E293B;
-    background: #F5F7FA;
-    transition: all 0.3s ease;
-}
-
-.form-input:focus {
-    outline: none;
-    border-color: #043460;
-    background: white;
-}
-
-textarea.form-input {
-    resize: vertical;
-    min-height: 120px;
-}
-
-.form-info {
-    display: flex;
-    gap: 12px;
-    padding: 15px;
-    background: #FFFBEB;
-    border-radius: 8px;
-    margin-bottom: 25px;
-}
-
-.form-info svg {
-    color: #F59E0B;
-    flex-shrink: 0;
-}
-
-.form-info p {
-    font-family: 'Crimson Pro', serif;
-    font-size: 14px;
-    color: #92400E;
-    margin: 0;
-}
-
-.form-actions {
-    display: flex;
-    gap: 15px;
-}
-
-.btn {
-    display: inline-block;
-    padding: 12px 30px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-family: 'Kanit', sans-serif;
-    font-size: 14px;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    border: none;
-}
-
-.btn-primary {
-    background: #CA9F37;
-    color: white;
-}
-
-.btn-primary:hover {
-    background: #D8B25A;
-}
-
-.btn-secondary {
-    background: #6B7280;
-    color: white;
-}
-
-.suggestion-types {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.suggestion-types li {
-    display: flex;
-    gap: 15px;
-    padding: 15px 0;
-    border-bottom: 1px solid #E2E8F0;
-}
-
-.suggestion-types li:last-child {
-    border-bottom: none;
-}
-
-.type-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 10px;
-    background: #F5F7FA;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #CA9F37;
-    flex-shrink: 0;
-}
-
-.suggestion-types h3 {
-    font-family: 'Kanit', sans-serif;
-    font-size: 15px;
-    color: #043460;
-    margin-bottom: 5px;
-}
-
-.suggestion-types p {
-    font-family: 'Crimson Pro', serif;
-    font-size: 13px;
-    color: #64748B;
-    margin: 0;
-}
-
-.alert {
-    padding: 15px 20px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    font-family: 'Crimson Pro', serif;
-}
-
-.alert-error {
-    background: #FEF2F2;
-    border: 1px solid #FECACA;
-    color: #DC2626;
-}
-
-.alert-success {
-    background: #F0FDF4;
-    border: 1px solid #BBF7D0;
-    color: #16A34A;
-}
-
-@media (max-width: 768px) {
-    .suggestion-container {
-        grid-template-columns: 1fr;
-    }
-}
-</style>
+</section>
 
 <?php
 require_once dirname(__DIR__) . '/layouts/footer.php';
