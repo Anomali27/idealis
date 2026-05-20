@@ -267,4 +267,32 @@ class EventController extends Controller
         }
         exit;
     }
+
+    /**
+     * Delete event - /events/{id}/delete
+     */
+    public function delete(int $id): void
+    {
+        AuthMiddleware::handleAnyRole(['admin']);
+
+        $event = $this->eventModel->getById($id);
+
+        if (!$event) {
+            $this->error404('Event not found');
+            return;
+        }
+
+        try {
+            $success = $this->eventModel->delete($id);
+            if ($success) {
+                Session::setFlash('success', 'Event deleted successfully!');
+            } else {
+                Session::setFlash('error', 'Failed to delete event.');
+            }
+        } catch (\Exception $e) {
+            Session::setFlash('error', 'Error: ' . $e->getMessage());
+        }
+
+        $this->redirectTo('/admin/dashboard?tab=events');
+    }
 }

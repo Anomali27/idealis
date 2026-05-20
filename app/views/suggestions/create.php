@@ -6,7 +6,7 @@ use App\Core\Session;
 
 $error = \App\Core\Session::getFlash('error');
 $success = \App\Core\Session::getFlash('success');
-$categories = $data['categories'] ?? [];
+$categories = $categories ?? [];
 
 ?>
 

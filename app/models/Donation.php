@@ -27,10 +27,10 @@ class Donation
                     d.*,
                     u.name as donor_name,
                     u.email as donor_email,
-                    a.title as activity_title
+                    e.name as activity_title
                 FROM {$this->table} d
                 LEFT JOIN users u ON d.user_id = u.id
-                LEFT JOIN activities a ON d.activity_id = a.id
+                LEFT JOIN events e ON d.activity_id = e.id
                 WHERE 1=1";
         $params = [];
 
@@ -75,10 +75,10 @@ class Donation
                     d.*,
                     u.name as donor_name,
                     u.email as donor_email,
-                    a.title as activity_title
+                    e.name as activity_title
                 FROM {$this->table} d
                 LEFT JOIN users u ON d.user_id = u.id
-                LEFT JOIN activities a ON d.activity_id = a.id
+                LEFT JOIN events e ON d.activity_id = e.id
                 WHERE d.id = ?";
 
         return $this->db->queryOne($sql, [$id]);
@@ -108,9 +108,9 @@ class Donation
     {
         $sql = "SELECT 
                     d.*,
-                    a.title as activity_title
+                    e.name as activity_title
                 FROM {$this->table} d
-                LEFT JOIN activities a ON d.activity_id = a.id
+                LEFT JOIN events e ON d.activity_id = e.id
                 WHERE d.user_id = ?
                 ORDER BY d.donated_at DESC";
 
@@ -218,10 +218,10 @@ class Donation
                     d.*,
                     u.name as donor_name,
                     u.email as donor_email,
-                    a.title as activity_title
+                    e.name as activity_title
                 FROM {$this->table} d
                 LEFT JOIN users u ON d.user_id = u.id
-                LEFT JOIN activities a ON d.activity_id = a.id
+                LEFT JOIN events e ON d.activity_id = e.id
                 WHERE 1=1";
         
         $params = [];

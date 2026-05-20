@@ -25,6 +25,7 @@ class Suggestion
     {
         $sql = "SELECT 
                     s.*,
+                    s.admin_response as response,
                     u.name as user_name,
                     u.email as user_email
                 FROM {$this->table} s
@@ -61,6 +62,7 @@ class Suggestion
     {
         $sql = "SELECT 
                     s.*,
+                    s.admin_response as response,
                     u.name as user_name,
                     u.email as user_email
                 FROM {$this->table} s
@@ -75,7 +77,7 @@ class Suggestion
      */
     public function getByUser(int $userId): array
     {
-        $sql = "SELECT * FROM {$this->table} WHERE user_id = ? ORDER BY created_at DESC";
+        $sql = "SELECT *, admin_response as response FROM {$this->table} WHERE user_id = ? ORDER BY created_at DESC";
         return $this->db->query($sql, [$userId]);
     }
 
@@ -113,7 +115,7 @@ class Suggestion
      */
     public function addResponse(int $id, string $response): bool
     {
-        $sql = "UPDATE {$this->table} SET response = ?, status = 'responded' WHERE id = ?";
+        $sql = "UPDATE {$this->table} SET admin_response = ?, status = 'reviewed' WHERE id = ?";
         return $this->db->execute($sql, [$response, $id]) > 0;
     }
 
@@ -153,7 +155,7 @@ class Suggestion
     {
         $labels = [
             'pending' => 'Pending',
-            'responded' => 'Responded',
+            'reviewed' => 'Reviewed',
             'implemented' => 'Implemented',
             'rejected' => 'Rejected'
         ];
@@ -168,7 +170,7 @@ class Suggestion
     {
         return [
             'pending' => 'Pending',
-            'responded' => 'Responded',
+            'reviewed' => 'Reviewed',
             'implemented' => 'Implemented',
             'rejected' => 'Rejected'
         ];

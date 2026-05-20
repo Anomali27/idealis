@@ -53,14 +53,76 @@ class DashboardController extends Controller
         // Require admin role
         AuthMiddleware::handleRole('admin');
 
-        $totalUsers = $this->userModel->getActiveCount();
+        $suggestionModel = new \App\Models\Suggestion();
+        $eventModel = new \App\Models\Event();
+        $userModel = new \App\Models\User();
+        $volunteerModel = new \App\Models\Volunteer();
+        $donationModel = new \App\Models\Donation();
 
-        // Get recent events (simplified)
-        $recentEvents = $this->eventModel->getAll();
+        // Query counts & data
+        $totalUsers = $userModel->getActiveCount();
+        $allEvents = $eventModel->getAll();
+        $totalEvents = count($allEvents);
+        
+        $pendingSuggestions = $suggestionModel->getPendingCount();
+        $allSuggestions = $suggestionModel->getAll();
+        $totalSuggestions = count($allSuggestions);
 
+        // Fetch all users
+        $allUsers = $userModel->getAll();
+
+        // Add donation totals and volunteer counts to events dynamically
+        $eventsData = [];
+        foreach ($allEvents as $event) {
+            $volCount = $volunteerModel->getCountByActivity($event['id']) ?? 0;
+            $donTotal = $donationModel->getTotalAmount($event['id']) ?? 0;
+            
+            $event['volunteer_count'] = $volCount;
+            $event['collected_donation'] = $donTotal;
+            $eventsData[] = $event;
+        }
+
+        // Fetch detailed volunteers list
+        $db = \App\Core\Database::getInstance();
+        $volunteers = $db->query("
+            SELECT 
+                ep.id,
+                ep.created_at,
+                u.name as user_name,
+                u.email as user_email,
+                u.role as user_role,
+                e.id as event_id,
+                e.name as event_name,
+                e.date as event_date
+            FROM event_participants ep
+            JOIN users u ON ep.user_id = u.id
+            JOIN events e ON ep.event_id = e.id
+            ORDER BY ep.created_at DESC
+        ");
+
+        // Fetch detailed donations list
+        $donations = $db->query("
+            SELECT 
+                d.*,
+                e.name as event_name
+            FROM donations d
+            LEFT JOIN events e ON d.activity_id = e.id
+            ORDER BY d.donated_at DESC
+        ");
+
+        // Prepare view data
         $this->data['title'] = 'Admin Dashboard - PIC Social Activity';
         $this->data['totalUsers'] = $totalUsers;
-        $this->data['recentEvents'] = array_slice($recentEvents, 0, 5);
+        $this->data['totalEvents'] = $totalEvents;
+        $this->data['totalSuggestions'] = $totalSuggestions;
+        $this->data['pendingSuggestions'] = $pendingSuggestions;
+        
+        $this->data['allUsers'] = $allUsers;
+        $this->data['allEvents'] = $eventsData;
+        $this->data['allSuggestions'] = $allSuggestions;
+        $this->data['volunteers'] = $volunteers;
+        $this->data['donations'] = $donations;
+        
         $this->data['userName'] = Session::getUserName();
 
         $this->render('admin/dashboard');

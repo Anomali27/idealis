@@ -1,6 +1,6 @@
 <?php
 /**
- * Volunteer Model
+ * Volunteer / Event Participant Model (Updated to match modern events/event_participants schema)
  * PIC Social Activity & Volunteer Management System
  */
 
@@ -12,7 +12,7 @@ use PDOException;
 class Volunteer
 {
     private Database $db;
-    private string $table = 'volunteers';
+    private string $table = 'event_participants';
 
     public function __construct()
     {
@@ -20,96 +20,94 @@ class Volunteer
     }
 
     /**
-     * Get all volunteers
+     * Get all volunteer registrations
      */
     public function getAll(array $filters = []): array
     {
         $sql = "SELECT 
-                    v.*,
+                    ep.*,
                     u.name as user_name,
                     u.email as user_email,
                     u.nis,
                     u.class,
-                    a.title as activity_title,
-                    a.activity_date,
-                    a.location
-                FROM {$this->table} v
-                JOIN users u ON v.user_id = u.id
-                JOIN activities a ON v.activity_id = a.id
+                    e.name as event_name,
+                    e.date as event_date
+                FROM {$this->table} ep
+                JOIN users u ON ep.user_id = u.id
+                JOIN events e ON ep.event_id = e.id
                 WHERE 1=1";
         $params = [];
 
-        if (!empty($filters['activity_id'])) {
-            $sql .= " AND v.activity_id = ?";
+        if (!empty($filters['event_id'])) {
+            $sql .= " AND ep.event_id = ?";
+            $params[] = $filters['event_id'];
+        }
+
+        if (!empty($filters['activity_id'])) { // legacy fallback
+            $sql .= " AND ep.event_id = ?";
             $params[] = $filters['activity_id'];
         }
 
         if (!empty($filters['user_id'])) {
-            $sql .= " AND v.user_id = ?";
+            $sql .= " AND ep.user_id = ?";
             $params[] = $filters['user_id'];
         }
 
-        if (!empty($filters['status'])) {
-            $sql .= " AND v.status = ?";
-            $params[] = $filters['status'];
-        }
-
         if (!empty($filters['search'])) {
-            $sql .= " AND (u.name LIKE ? OR u.nis LIKE ? OR a.title LIKE ?)";
+            $sql .= " AND (u.name LIKE ? OR u.nis LIKE ? OR e.name LIKE ?)";
             $search = "%{$filters['search']}%";
             $params[] = $search;
             $params[] = $search;
             $params[] = $search;
         }
 
-        $sql .= " ORDER BY v.registered_at DESC";
+        $sql .= " ORDER BY ep.created_at DESC";
 
         return $this->db->query($sql, $params);
     }
 
     /**
-     * Get volunteer by ID
+     * Get volunteer registration by ID
      */
     public function getById(int $id): ?array
     {
         $sql = "SELECT 
-                    v.*,
+                    ep.*,
                     u.name as user_name,
                     u.email as user_email,
                     u.nis,
                     u.class,
-                    a.title as activity_title,
-                    a.activity_date,
-                    a.location
-                FROM {$this->table} v
-                JOIN users u ON v.user_id = u.id
-                JOIN activities a ON v.activity_id = a.id
-                WHERE v.id = ?";
+                    e.name as event_name,
+                    e.date as event_date
+                FROM {$this->table} ep
+                JOIN users u ON ep.user_id = u.id
+                JOIN events e ON ep.event_id = e.id
+                WHERE ep.id = ?";
 
         return $this->db->queryOne($sql, [$id]);
     }
 
     /**
-     * Get volunteers by activity
+     * Get volunteers by event (activity) ID
      */
-    public function getByActivity(int $activityId): array
+    public function getByActivity(int $eventId): array
     {
         $sql = "SELECT 
-                    v.*,
+                    ep.*,
                     u.name as user_name,
                     u.email as user_email,
                     u.nis,
                     u.class
-                FROM {$this->table} v
-                JOIN users u ON v.user_id = u.id
-                WHERE v.activity_id = ?
-                ORDER BY v.registered_at DESC";
+                FROM {$this->table} ep
+                JOIN users u ON ep.user_id = u.id
+                WHERE ep.event_id = ?
+                ORDER BY ep.created_at DESC";
 
-        return $this->db->query($sql, [$activityId]);
+        return $this->db->query($sql, [$eventId]);
     }
 
     /**
-     * Get volunteers by user (alias for getByUserId)
+     * Get volunteers by user
      */
     public function getByUser(int $userId): array
     {
@@ -122,130 +120,101 @@ class Volunteer
     public function getByUserId(int $userId): array
     {
         $sql = "SELECT 
-                    v.*,
-                    a.title as activity_title,
-                    a.activity_date,
-                    a.location,
-                    a.status as activity_status
-                FROM {$this->table} v
-                JOIN activities a ON v.activity_id = a.id
-                WHERE v.user_id = ?
-                ORDER BY a.activity_date DESC";
+                    ep.*,
+                    e.name as event_name,
+                    e.date as event_date,
+                    e.description as event_description
+                FROM {$this->table} ep
+                JOIN events e ON ep.event_id = e.id
+                WHERE ep.user_id = ?
+                ORDER BY e.date DESC";
 
         return $this->db->query($sql, [$userId]);
     }
 
     /**
-     * Check if user is registered for activity
+     * Check if user is registered for event
      */
-    public function isRegistered(int $activityId, int $userId): bool
+    public function isRegistered(int $eventId, int $userId): bool
     {
         $sql = "SELECT COUNT(*) as count FROM {$this->table} 
-                WHERE activity_id = ? AND user_id = ? 
-                AND status NOT IN ('cancelled', 'rejected')";
+                WHERE event_id = ? AND user_id = ?";
         
-        $result = $this->db->queryOne($sql, [$activityId, $userId]);
+        $result = $this->db->queryOne($sql, [$eventId, $userId]);
         return ($result['count'] ?? 0) > 0;
     }
 
     /**
      * Register volunteer
      */
-    public function register(int $userId, int $activityId, string $notes = ''): int
+    public function register(int $userId, int $eventId, string $notes = ''): int
     {
-        // Check if already registered
-        if ($this->isRegistered($activityId, $userId)) {
-            throw new \Exception('You are already registered for this activity.');
+        if ($this->isRegistered($eventId, $userId)) {
+            throw new \Exception('You are already registered for this event.');
         }
 
-        $sql = "INSERT INTO {$this->table} (user_id, activity_id, status, notes) 
-                VALUES (?, ?, 'registered', ?)";
-
-        $this->db->execute($sql, [$userId, $activityId, $notes]);
-        
-        // Update activity volunteer count
-        $this->updateActivityVolunteerCount($activityId);
+        $sql = "INSERT INTO {$this->table} (user_id, event_id, created_at) VALUES (?, ?, NOW())";
+        $this->db->execute($sql, [$userId, $eventId]);
         
         return $this->db->lastInsertId();
     }
 
     /**
-     * Update volunteer status
+     * Update volunteer status (Legacy noop wrapper for event_participants without status column)
      */
     public function updateStatus(int $id, string $status): bool
     {
-        $sql = "UPDATE {$this->table} SET status = ? WHERE id = ?";
-        $result = $this->db->execute($sql, [$status, $id]);
-        
-        // Get activity_id and update count
-        $volunteer = $this->getById($id);
-        if ($volunteer) {
-            $this->updateActivityVolunteerCount($volunteer['activity_id']);
-        }
-        
-        return $result > 0;
+        return true;
     }
 
     /**
-     * Cancel volunteer registration
+     * Cancel volunteer registration (delete record)
      */
     public function cancel(int $id): bool
     {
-        return $this->updateStatus($id, 'cancelled');
+        return $this->delete($id);
     }
 
     /**
-     * Confirm volunteer
+     * Confirm volunteer (noop for compatibility)
      */
     public function confirm(int $id): bool
     {
-        return $this->updateStatus($id, 'confirmed');
+        return true;
     }
 
     /**
-     * Complete volunteer
+     * Complete volunteer (noop for compatibility)
      */
     public function complete(int $id): bool
     {
-        return $this->updateStatus($id, 'completed');
+        return true;
     }
 
     /**
-     * Reject volunteer
+     * Reject volunteer (delete record)
      */
     public function reject(int $id): bool
     {
-        return $this->updateStatus($id, 'rejected');
+        return $this->delete($id);
     }
 
     /**
-     * Delete volunteer record
+     * Delete volunteer registration
      */
     public function delete(int $id): bool
     {
-        // Get activity_id before delete
-        $volunteer = $this->getById($id);
-        
         $sql = "DELETE FROM {$this->table} WHERE id = ?";
-        $result = $this->db->execute($sql, [$id]);
-        
-        // Update activity volunteer count
-        if ($volunteer) {
-            $this->updateActivityVolunteerCount($volunteer['activity_id']);
-        }
-        
-        return $result > 0;
+        return $this->db->execute($sql, [$id]) > 0;
     }
 
     /**
-     * Get volunteer count by activity
+     * Get volunteer count by event (activity)
      */
-    public function getCountByActivity(int $activityId): int
+    public function getCountByActivity(int $eventId): int
     {
-        $sql = "SELECT COUNT(*) as count FROM {$this->table} 
-                WHERE activity_id = ? AND status NOT IN ('cancelled', 'rejected')";
-        
-        $result = $this->db->queryOne($sql, [$activityId]);
+        $sql = "SELECT COUNT(*) as count FROM {$this->table} WHERE event_id = ?";
+        $result = $this->db->queryOne($sql, [$eventId]);
         return (int) ($result['count'] ?? 0);
     }
 
@@ -254,9 +223,7 @@ class Volunteer
      */
     public function getCountByUser(int $userId): int
     {
-        $sql = "SELECT COUNT(*) as count FROM {$this->table} 
-                WHERE user_id = ? AND status = 'completed'";
-        
+        $sql = "SELECT COUNT(*) as count FROM {$this->table} WHERE user_id = ?";
         $result = $this->db->queryOne($sql, [$userId]);
         return (int) ($result['count'] ?? 0);
     }
@@ -267,18 +234,18 @@ class Volunteer
     public function getHistory(int $userId): array
     {
         $sql = "SELECT 
-                    v.id,
-                    v.status as volunteer_status,
-                    v.registered_at,
-                    a.id as activity_id,
-                    a.title as activity_title,
-                    a.activity_date,
-                    a.location,
-                    a.status as activity_status
-                FROM {$this->table} v
-                JOIN activities a ON v.activity_id = a.id
-                WHERE v.user_id = ?
-                ORDER BY a.activity_date DESC";
+                    ep.id,
+                    'registered' as volunteer_status,
+                    ep.created_at as registered_at,
+                    e.id as activity_id,
+                    e.name as activity_title,
+                    e.date as activity_date,
+                    'Online' as location,
+                    'upcoming' as activity_status
+                FROM {$this->table} ep
+                JOIN events e ON ep.event_id = e.id
+                WHERE ep.user_id = ?
+                ORDER BY e.date DESC";
 
         return $this->db->query($sql, [$userId]);
     }
@@ -291,28 +258,23 @@ class Volunteer
         $offset = ($page - 1) * $perPage;
         
         $sql = "SELECT 
-                    v.*,
+                    ep.*,
                     u.name as user_name,
                     u.email as user_email,
                     u.nis,
                     u.class,
-                    a.title as activity_title,
-                    a.activity_date
-                FROM {$this->table} v
-                JOIN users u ON v.user_id = u.id
-                JOIN activities a ON v.activity_id = a.id
+                    e.name as event_name,
+                    e.date as event_date
+                FROM {$this->table} ep
+                JOIN users u ON ep.user_id = u.id
+                JOIN events e ON ep.event_id = e.id
                 WHERE 1=1";
         
         $params = [];
 
-        if (!empty($filters['activity_id'])) {
-            $sql .= " AND v.activity_id = ?";
-            $params[] = $filters['activity_id'];
-        }
-
-        if (!empty($filters['status'])) {
-            $sql .= " AND v.status = ?";
-            $params[] = $filters['status'];
+        if (!empty($filters['event_id'])) {
+            $sql .= " AND ep.event_id = ?";
+            $params[] = $filters['event_id'];
         }
 
         if (!empty($filters['search'])) {
@@ -322,31 +284,26 @@ class Volunteer
             $params[] = $search;
         }
 
-        $sql .= " ORDER BY v.registered_at DESC LIMIT ? OFFSET ?";
+        $sql .= " ORDER BY ep.created_at DESC LIMIT ? OFFSET ?";
         $params[] = $perPage;
         $params[] = $offset;
 
-        $volunteers = $this->db->query($sql, $params);
+        $volunteersList = $this->db->query($sql, $params);
 
         // Get total count
-        $countSql = "SELECT COUNT(*) as total FROM {$this->table} v WHERE 1=1";
+        $countSql = "SELECT COUNT(*) as total FROM {$this->table} ep WHERE 1=1";
         $countParams = [];
 
-        if (!empty($filters['activity_id'])) {
-            $countSql .= " AND v.activity_id = ?";
-            $countParams[] = $filters['activity_id'];
-        }
-
-        if (!empty($filters['status'])) {
-            $countSql .= " AND v.status = ?";
-            $countParams[] = $filters['status'];
+        if (!empty($filters['event_id'])) {
+            $countSql .= " AND ep.event_id = ?";
+            $countParams[] = $filters['event_id'];
         }
 
         $totalResult = $this->db->queryOne($countSql, $countParams);
         $total = (int) ($totalResult['total'] ?? 0);
 
         return [
-            'data' => $volunteers,
+            'data' => $volunteersList,
             'total' => $total,
             'page' => $page,
             'perPage' => $perPage,
@@ -355,35 +312,11 @@ class Volunteer
     }
 
     /**
-     * Update activity volunteer count
-     */
-    private function updateActivityVolunteerCount(int $activityId): void
-    {
-        $sql = "UPDATE activities 
-                SET current_volunteers = (
-                    SELECT COUNT(*) FROM {$this->table} 
-                    WHERE activity_id = ? AND status NOT IN ('cancelled', 'rejected')
-                )
-                WHERE id = ?";
-        
-        $this->db->execute($sql, [$activityId, $activityId]);
-    }
-
-    /**
      * Get status label
      */
     public static function getStatusLabel(string $status): string
     {
-        $labels = [
-            'registered' => 'Registered',
-            'confirmed' => 'Confirmed',
-            'attended' => 'Attended',
-            'completed' => 'Completed',
-            'cancelled' => 'Cancelled',
-            'rejected' => 'Rejected'
-        ];
-
-        return $labels[$status] ?? ucfirst($status);
+        return 'Registered';
     }
 
     /**
@@ -392,12 +325,7 @@ class Volunteer
     public static function getStatuses(): array
     {
         return [
-            'registered' => 'Registered',
-            'confirmed' => 'Confirmed',
-            'attended' => 'Attended',
-            'completed' => 'Completed',
-            'cancelled' => 'Cancelled',
-            'rejected' => 'Rejected'
+            'registered' => 'Registered'
         ];
     }
 }
