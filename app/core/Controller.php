@@ -133,7 +133,9 @@ class Controller
     protected function redirectTo(string $route): void
     {
         $baseUrl = $this->getBaseUrl();
-        $this->redirect($baseUrl . $route);
+        // Bulletproof single forward-slash separator joining
+        $url = rtrim($baseUrl, '/') . '/' . ltrim($route, '/');
+        $this->redirect($url);
     }
 
     /**
@@ -143,10 +145,14 @@ class Controller
     {
         $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
         $host = $_SERVER['HTTP_HOST'];
-        $scriptDir = dirname($_SERVER['SCRIPT_NAME']);
         
-        // Fix double slashes
-        $base = $protocol . '://' . $host . rtrim($scriptDir, '/') . '/';
+        // Normalize backslashes to forward slashes on Windows servers
+        $scriptDir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
+        if ($scriptDir === '/') {
+            $scriptDir = '';
+        }
+        
+        $base = $protocol . '://' . $host . '/' . ltrim($scriptDir, '/');
         return rtrim($base, '/');
     }
 

@@ -269,6 +269,74 @@ class EventController extends Controller
     }
 
     /**
+     * Event create form - /events/create
+     */
+    public function create(): void
+    {
+        AuthMiddleware::handleAnyRole(['admin']);
+
+        $this->data['title'] = 'Create Event - PIC Social Activity';
+
+        $this->render('events/create');
+    }
+
+    /**
+     * Store new event - POST /events/store
+     */
+    public function store(): void
+    {
+        AuthMiddleware::handleAnyRole(['admin']);
+
+        $data = [
+            'name' => trim($_POST['name'] ?? ''),
+            'date' => $_POST['date'] ?? '',
+            'description' => trim($_POST['description'] ?? ''),
+            'target_donation' => !empty($_POST['target_donation']) ? (float)$_POST['target_donation'] : null,
+            'collected_donation' => 0,
+        ];
+
+        $errors = [];
+        if (empty($data['name'])) $errors[] = 'Event name is required.';
+        if (empty($data['date'])) $errors[] = 'Date is required.';
+
+        if (!empty($errors)) {
+            Session::setFlash('error', implode('<br>', $errors));
+            $this->redirectTo('/events/create');
+            return;
+        }
+
+        try {
+            $eventId = $this->eventModel->create($data);
+            if ($eventId) {
+                // Handle image upload if provided
+                if (!empty($_FILES['image']['name']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+                    $uploadDir = dirname(dirname(__DIR__)) . '/public/assets/images/event/';
+                    if (!is_dir($uploadDir)) {
+                        mkdir($uploadDir, 0755, true);
+                    }
+                    $ext = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
+                    $filename = 'event-' . $eventId . '-' . time() . '.' . $ext;
+                    $uploadPath = $uploadDir . $filename;
+
+                    if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadPath)) {
+                        $imgUrl = '/assets/images/event/' . $filename;
+                        $this->eventModel->update($eventId, ['image_url' => $imgUrl]);
+                    }
+                }
+
+                Session::setFlash('success', 'Event created successfully!');
+                $this->redirectTo('/admin/dashboard?tab=events');
+            } else {
+                Session::setFlash('error', 'Failed to create event.');
+                $this->redirectTo('/events/create');
+            }
+        } catch (\Exception $e) {
+            Session::setFlash('error', 'Error: ' . $e->getMessage());
+            $this->redirectTo('/events/create');
+        }
+    }
+
+    /**
      * Delete event - /events/{id}/delete
      */
     public function delete(int $id): void

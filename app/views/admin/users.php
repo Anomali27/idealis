@@ -1,5 +1,7 @@
 <?php // app/views/admin/users.php ?>
 <?php use App\Core\Session; ?>
+<?php require_once dirname(__DIR__) . '/layouts/header.php'; ?>
+<?php require_once dirname(__DIR__) . '/layouts/navbar.php'; ?>
 
 <section class="pt-28 pb-16 bg-gray-50 min-h-screen">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -253,3 +255,5 @@ function showToast(message, type) {
     }, 4000);
 }
 </script>
+
+<?php require_once dirname(__DIR__) . '/layouts/footer.php'; ?>

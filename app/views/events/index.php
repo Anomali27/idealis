@@ -1,5 +1,7 @@
 <?php // app/views/events/index.php ?>
 <?php use App\Core\Session; ?>
+<?php require_once dirname(__DIR__) . '/layouts/header.php'; ?>
+<?php require_once dirname(__DIR__) . '/layouts/navbar.php'; ?>
 
 <!-- Events Page Hero Banner -->
 <section class="relative bg-gradient-to-br from-primary via-primary-dark to-primary pt-28 pb-16 overflow-hidden">
@@ -137,3 +139,5 @@
     <!-- Notification Dot -->
     <span class="absolute top-0 right-0 md:right-2 w-3 h-3 bg-red-500 border-2 border-white rounded-full"></span>
 </a>
+
+<?php require_once dirname(__DIR__) . '/layouts/footer.php'; ?>

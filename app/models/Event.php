@@ -139,7 +139,12 @@ class Event
         $params[] = $id;
         $sql = "UPDATE {$this->table} SET " . implode(', ', $fields) . " WHERE id = ?";
 
-        return $this->db->execute($sql, $params) > 0;
+        try {
+            $this->db->execute($sql, $params);
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
     /**

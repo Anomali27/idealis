@@ -72,9 +72,12 @@ $router->add('GET', '/profile', 'UserController', 'profile');
 // EVENT ROUTES (New Events & News System)
 // =====================================================
 $router->add('GET', '/events', 'EventController', 'index');
+$router->add('GET', '/events/create', 'EventController', 'create');
+$router->add('POST', '/events/store', 'EventController', 'store');
 $router->add('GET', '/events/{id}', 'EventController', 'show');
 $router->add('GET', '/events/{id}/edit', 'EventController', 'edit');
 $router->add('POST', '/events/{id}/update', 'EventController', 'update');
+$router->add('POST', '/events/{id}/delete', 'EventController', 'delete');
 $router->add('POST', '/events/{id}/join', 'EventController', 'join');
 $router->add('POST', '/events/{id}/donate', 'EventController', 'donate');
 

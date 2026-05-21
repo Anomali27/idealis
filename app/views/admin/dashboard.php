@@ -173,7 +173,7 @@ $donations = $donations ?? [];
                             <?php foreach ($recentEvents as $event): ?>
                                 <?php 
                                     $target = (float)($event['target_donation'] ?? 0);
-                                    $collected = (float)($event['collected_donation'] ?? 0);
+                                    $collected = (float)($event['total_donation'] ?? 0);
                                     $percent = $target > 0 ? min(100, round(($collected / $target) * 100)) : 0;
                                 ?>
                                 <div class="bg-white rounded-3xl border border-slate-100 shadow-md hover:shadow-xl hover:border-primary/20 transition-all duration-300 flex flex-col h-full group overflow-hidden relative">
@@ -588,7 +588,7 @@ $donations = $donations ?? [];
                                     <?php if (!empty($event['target_donation']) && $event['target_donation'] > 0): ?>
                                         <?php 
                                             $target = (float)$event['target_donation'];
-                                            $collected = (float)$event['collected_donation'];
+                                            $collected = (float)($event['total_donation'] ?? 0);
                                             $percent = $target > 0 ? min(100, round(($collected / $target) * 100)) : 0;
                                             $fundraiserCount++;
                                         ?>

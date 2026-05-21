@@ -83,8 +83,8 @@ class User
     public function create(array $data): int
     {
         $sql = "INSERT INTO {$this->table} 
-                (name, email, password, role, nis, class, phone, avatar, is_active) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                (name, email, password, role, nis, class, major, phone, avatar, is_active) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         $params = [
             $data['name'],
@@ -93,6 +93,7 @@ class User
             $data['role'] ?? 'student',
             $data['nis'] ?? null,
             $data['class'] ?? null,
+            $data['major'] ?? null,
             $data['phone'] ?? null,
             $data['avatar'] ?? 'default.png',
             $data['is_active'] ?? 1
@@ -124,7 +125,12 @@ class User
         $params[] = $id;
         $sql = "UPDATE {$this->table} SET " . implode(', ', $fields) . " WHERE id = ?";
 
-        return $this->db->execute($sql, $params) > 0;
+        try {
+            $this->db->execute($sql, $params);
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
     /**

@@ -1,5 +1,7 @@
 <?php // app/views/events/show.php ?>
 <?php use App\Core\Session; ?>
+<?php require_once dirname(__DIR__) . '/layouts/header.php'; ?>
+<?php require_once dirname(__DIR__) . '/layouts/navbar.php'; ?>
 
 <!-- Event Detail Hero -->
 <section class="relative pt-20">
@@ -306,3 +308,5 @@
     </div>
 </div>
 <?php endif; ?>
+
+<?php require_once dirname(__DIR__) . '/layouts/footer.php'; ?>

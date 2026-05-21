@@ -35,7 +35,7 @@ class UserController extends Controller
             'is_active' => true
         ];
 
-        $page = max(1, (int)($_GET['page'] ?? 1));
+        $page = max(1, (int) ($_GET['page'] ?? 1));
         $users = $this->userModel->getPaginated($page, 25, $filters);
 
         $this->data['title'] = 'User Management - PIC Social Activity';
@@ -77,6 +77,8 @@ class UserController extends Controller
             return;
         }
 
+        $role = $_POST['role'] ?? 'student';
+
         // Check if email exists
         if ($this->userModel->emailExists($_POST['email'])) {
             Session::setFlash('error', 'Email already exists.');
@@ -84,8 +86,8 @@ class UserController extends Controller
             return;
         }
 
-        // Check if NIS exists
-        if (!empty($_POST['nis']) && $this->userModel->nisExists($_POST['nis'])) {
+        // Check if NIS exists (only for students)
+        if ($role === 'student' && !empty($_POST['nis']) && $this->userModel->nisExists($_POST['nis'])) {
             Session::setFlash('error', 'NIS already exists.');
             $this->redirectTo('/admin/users/create');
             return;
@@ -96,12 +98,13 @@ class UserController extends Controller
             'name' => trim($_POST['name']),
             'email' => trim($_POST['email']),
             'password' => User::hashPassword($_POST['password']),
-            'role' => $_POST['role'] ?? 'student',
-            'nis' => !empty($_POST['nis']) ? trim($_POST['nis']) : null,
-            'class' => !empty($_POST['class']) ? trim($_POST['class']) : null,
+            'role' => $role,
+            'nis' => ($role === 'student' && !empty($_POST['nis'])) ? trim($_POST['nis']) : null,
+            'class' => ($role === 'student' && !empty($_POST['class'])) ? trim($_POST['class']) : null,
+            'major' => ($role === 'student' && !empty($_POST['major'])) ? trim($_POST['major']) : null,
             'phone' => !empty($_POST['phone']) ? trim($_POST['phone']) : null,
             'avatar' => 'default.png',
-            'is_active' => 1
+            'is_active' => isset($_POST['is_active']) ? (int) $_POST['is_active'] : 1
         ];
 
         try {
@@ -109,7 +112,7 @@ class UserController extends Controller
 
             if ($userId > 0) {
                 Session::setFlash('success', 'User created successfully!');
-                $this->redirectTo('/admin/users');
+                $this->redirectTo('/admin/dashboard?tab=users');
             } else {
                 Session::setFlash('error', 'Failed to create user.');
                 $this->redirectTo('/admin/users/create');
@@ -166,6 +169,8 @@ class UserController extends Controller
             return;
         }
 
+        $role = $_POST['role'] ?? 'student';
+
         // Check if email exists (exclude current user)
         if ($this->userModel->emailExists($_POST['email'], $id)) {
             Session::setFlash('error', 'Email already exists.');
@@ -173,8 +178,8 @@ class UserController extends Controller
             return;
         }
 
-        // Check if NIS exists (exclude current user)
-        if (!empty($_POST['nis']) && $this->userModel->nisExists($_POST['nis'], $id)) {
+        // Check if NIS exists (exclude current user - only for students)
+        if ($role === 'student' && !empty($_POST['nis']) && $this->userModel->nisExists($_POST['nis'], $id)) {
             Session::setFlash('error', 'NIS already exists.');
             $this->redirectTo('/admin/users/' . $id . '/edit');
             return;
@@ -184,10 +189,12 @@ class UserController extends Controller
         $data = [
             'name' => trim($_POST['name']),
             'email' => trim($_POST['email']),
-            'role' => $_POST['role'] ?? 'student',
-            'nis' => !empty($_POST['nis']) ? trim($_POST['nis']) : null,
-            'class' => !empty($_POST['class']) ? trim($_POST['class']) : null,
-            'phone' => !empty($_POST['phone']) ? trim($_POST['phone']) : null
+            'role' => $role,
+            'nis' => ($role === 'student' && !empty($_POST['nis'])) ? trim($_POST['nis']) : null,
+            'class' => ($role === 'student' && !empty($_POST['class'])) ? trim($_POST['class']) : null,
+            'major' => ($role === 'student' && !empty($_POST['major'])) ? trim($_POST['major']) : null,
+            'phone' => !empty($_POST['phone']) ? trim($_POST['phone']) : null,
+            'is_active' => isset($_POST['is_active']) ? (int) $_POST['is_active'] : 1
         ];
 
         // Update password if provided
@@ -200,7 +207,7 @@ class UserController extends Controller
 
             if ($success) {
                 Session::setFlash('success', 'User updated successfully!');
-                $this->redirectTo('/admin/users');
+                $this->redirectTo('/admin/dashboard?tab=users');
             } else {
                 Session::setFlash('error', 'Failed to update user.');
                 $this->redirectTo('/admin/users/' . $id . '/edit');
@@ -229,7 +236,7 @@ class UserController extends Controller
         // Prevent deleting own account
         if ($id === Session::getUserId()) {
             Session::setFlash('error', 'You cannot delete your own account.');
-            $this->redirectTo('/admin/users');
+            $this->redirectTo('/admin/dashboard?tab=users');
             return;
         }
 
@@ -245,7 +252,7 @@ class UserController extends Controller
             Session::setFlash('error', 'Error: ' . $e->getMessage());
         }
 
-        $this->redirectTo('/admin/users');
+        $this->redirectTo('/admin/dashboard?tab=users');
     }
 
     /**
@@ -307,7 +314,7 @@ class UserController extends Controller
         $userId = Session::getUserId();
         $userModel = new User();
         $eventModel = new \App\Models\Event();
-        
+
         $user = $userModel->getById($userId);
         $events = $eventModel->getUserEvents($userId);
         $donations = $eventModel->getUserDonations($userId);
@@ -318,10 +325,10 @@ class UserController extends Controller
 
         // Calculate stats
         $totalEvents = count($events);
-        $totalDonations = array_reduce($donations, function($carry, $item) {
+        $totalDonations = array_reduce($donations, function ($carry, $item) {
             return $carry + ($item['amount'] ?? 0);
         }, 0);
-        
+
         // Calculate volunteer hours (assume 5 hours per completed event)
         $totalVolunteerHours = 0;
         $today = date('Y-m-d');
@@ -355,13 +362,13 @@ class UserController extends Controller
         $userId = Session::getUserId();
         $userModel = new User();
         $eventModel = new \App\Models\Event();
-        
+
         $user = $userModel->getById($userId);
         $events = $eventModel->getUserEvents($userId);
         $donations = $eventModel->getUserDonations($userId);
 
         $totalEvents = count($events);
-        $totalDonations = array_reduce($donations, function($carry, $item) {
+        $totalDonations = array_reduce($donations, function ($carry, $item) {
             return $carry + ($item['amount'] ?? 0);
         }, 0);
 
@@ -370,7 +377,8 @@ class UserController extends Controller
 
         // Rank Standing
         $standingPercent = max(1, 100 - ($totalEvents * 9));
-        if ($totalEvents == 0) $standingPercent = 100;
+        if ($totalEvents == 0)
+            $standingPercent = 100;
 
         $this->data['title'] = 'User Profile - PIC Social Activity';
         $this->data['user'] = $user;
@@ -385,7 +393,7 @@ class UserController extends Controller
     private function calculateRank(int $totalEvents): array
     {
         $eventsCount = min(10, $totalEvents);
-        
+
         if ($eventsCount >= 9) {
             return [
                 'name' => 'Diamond',

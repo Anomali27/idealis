@@ -68,8 +68,8 @@
                         Login
                     </a>
                 <?php else: 
-$user = Session::getUser();
-                    $fullName = $user['name'] ?? Session::getUserName() ?? 'User';
+                    $loggedInUser = Session::getUser();
+                    $fullName = $loggedInUser['name'] ?? Session::getUserName() ?? 'User';
                     $role = Session::getUserRole();
                     $displayName = ($role === 'admin') ? 'admin' : $fullName;
                     $words = preg_split('/\\s+/', trim($fullName));

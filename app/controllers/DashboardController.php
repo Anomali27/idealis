@@ -71,14 +71,18 @@ class DashboardController extends Controller
         // Fetch all users
         $allUsers = $userModel->getAll();
 
-        // Add donation totals and volunteer counts to events dynamically
+        $db = \App\Core\Database::getInstance();
         $eventsData = [];
         foreach ($allEvents as $event) {
             $volCount = $volunteerModel->getCountByActivity($event['id']) ?? 0;
-            $donTotal = $donationModel->getTotalAmount($event['id']) ?? 0;
+            
+            // Query dynamic donation sum from active event_donations table
+            $donTotalQuery = $db->queryOne("SELECT COALESCE(SUM(amount), 0) as total FROM event_donations WHERE event_id = ?", [$event['id']]);
+            $donTotal = (float)($donTotalQuery['total'] ?? 0);
             
             $event['volunteer_count'] = $volCount;
             $event['collected_donation'] = $donTotal;
+            $event['total_donation'] = $donTotal;
             $eventsData[] = $event;
         }
 
@@ -100,14 +104,23 @@ class DashboardController extends Controller
             ORDER BY ep.created_at DESC
         ");
 
-        // Fetch detailed donations list
+        // Fetch detailed donations list from active event_donations table
         $donations = $db->query("
             SELECT 
-                d.*,
+                ed.id,
+                ed.event_id,
+                ed.user_id,
+                ed.donor_name,
+                ed.donor_class,
+                ed.amount,
+                ed.message,
+                'Verified' as status,
+                'Direct Transfer' as payment_method,
+                ed.created_at as donated_at,
                 e.name as event_name
-            FROM donations d
-            LEFT JOIN events e ON d.activity_id = e.id
-            ORDER BY d.donated_at DESC
+            FROM event_donations ed
+            LEFT JOIN events e ON ed.event_id = e.id
+            ORDER BY ed.created_at DESC
         ");
 
         // Prepare view data

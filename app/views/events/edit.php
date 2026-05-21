@@ -1,5 +1,7 @@
 <?php // app/views/events/edit.php ?>
 <?php use App\Core\Session; ?>
+<?php require_once dirname(__DIR__) . '/layouts/header.php'; ?>
+<?php require_once dirname(__DIR__) . '/layouts/navbar.php'; ?>
 
 <section class="pt-28 pb-16 bg-gray-50 min-h-screen">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -119,3 +121,5 @@ function previewImage(input) {
     }
 }
 </script>
+
+<?php require_once dirname(__DIR__) . '/layouts/footer.php'; ?>
