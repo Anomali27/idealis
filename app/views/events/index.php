@@ -33,7 +33,7 @@
                 <p class="text-gray-500 text-lg">Showing <?= count($events ?? []) ?> events from our community</p>
             </div>
             <?php if ($isAdmin ?? false): ?>
-            <a href="/activities/create" class="mt-4 md:mt-0 inline-flex items-center gap-2 px-6 py-3 bg-primary text-white font-semibold rounded-xl hover:bg-primary-dark transition-all shadow-lg shadow-primary/20">
+            <a href="/events/create" class="mt-4 md:mt-0 inline-flex items-center gap-2 px-6 py-3 bg-primary text-white font-semibold rounded-xl hover:bg-primary-dark transition-all shadow-lg shadow-primary/20">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                 Create Event
             </a>

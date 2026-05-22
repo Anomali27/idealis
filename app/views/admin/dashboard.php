@@ -121,8 +121,8 @@ $donations = $donations ?? [];
                     </button>
 
                     <!-- Suggestions Button -->
-                    <button onclick="showSection('forms')"
-                        class="w-full flex items-center p-3 rounded-xl hover:bg-purple-50 text-slate-500 hover:text-purple-600 font-medium transition-all group-hover:px-4 cursor-pointer outline-none <?php echo ($_GET['tab'] ?? '') == 'forms' ? 'bg-purple-50 text-purple-600 border border-purple-200 shadow-sm font-semibold' : ''; ?>">
+                    <button onclick="showSection('suggestions')"
+                        class="w-full flex items-center p-3 rounded-xl hover:bg-purple-50 text-slate-500 hover:text-purple-600 font-medium transition-all group-hover:px-4 cursor-pointer outline-none <?php echo ($_GET['tab'] ?? '') == 'suggestions' ? 'bg-purple-50 text-purple-600 border border-purple-200 shadow-sm font-semibold' : ''; ?>">
                         <svg class="w-6 h-6 shrink-0 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                         </svg>
@@ -421,7 +421,7 @@ $donations = $donations ?? [];
                 </section>
 
                 <!-- SUGGESTIONS SECTION (CARDS VIEW WITH FULL DATABASE ACTIONS) -->
-                <section id="forms" class="section-content hidden animate-fadeIn">
+                <section id="suggestions" class="section-content hidden animate-fadeIn">
                     <?php
                     // Calculate stats for Suggestions Bento Grid inside Dashboard
                     $totalCount = count($allSuggestions);
@@ -996,7 +996,7 @@ function confirmSuggestionAction(id, action) {
             // Sesuaikan warna berdasarkan tab
             if (section === 'events') activeBtn.classList.add('bg-blue-50', 'text-blue-600', 'border', 'border-blue-200');
             if (section === 'users') activeBtn.classList.add('bg-indigo-50', 'text-indigo-600', 'border', 'border-indigo-200');
-            if (section === 'forms') activeBtn.classList.add('bg-purple-50', 'text-purple-600', 'border', 'border-purple-200');
+            if (section === 'suggestions') activeBtn.classList.add('bg-purple-50', 'text-purple-600', 'border', 'border-purple-200');
             if (section === 'fundraisers') activeBtn.classList.add('bg-emerald-50', 'text-emerald-600', 'border', 'border-emerald-200');
             if (section === 'volunteers') activeBtn.classList.add('bg-orange-50', 'text-orange-600', 'border', 'border-orange-200');
         }
