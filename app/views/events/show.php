@@ -45,30 +45,6 @@
             
             <!-- Main Content (2/3) -->
             <div class="lg:col-span-2 space-y-8">
-                <!-- Flash Messages -->
-                <?php $flash = Session::getFlash(); ?>
-                <?php if (!empty($flash['success'])): ?>
-                <!-- Success Modal -->
-                <div id="success-modal" class="fixed inset-0 z-[1000] flex items-center justify-center p-4">
-                    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="document.getElementById('success-modal').remove()"></div>
-                    <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl relative text-center">
-                        <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <svg class="w-8 h-8 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
-                        </div>
-                        <h3 class="text-2xl font-bold text-gray-900 font-poppins mb-2">Success!</h3>
-                        <p class="text-gray-600 mb-6"><?= $flash['success'] ?></p>
-                        <button onclick="document.getElementById('success-modal').remove()" class="w-full py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-xl transition-colors">
-                            Awesome
-                        </button>
-                    </div>
-                </div>
-                <?php endif; ?>
-                <?php if (!empty($flash['error'])): ?>
-                <div class="p-4 bg-red-50 border border-red-200 text-red-700 rounded-2xl flex items-center gap-3">
-                    <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
-                    <?= $flash['error'] ?>
-                </div>
-                <?php endif; ?>
                 <!-- Quick Info Cards -->
                 <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
                     <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
@@ -261,8 +237,11 @@
                     You are participating
                 </button>
             <?php else: ?>
-                <form action="/events/<?= $event['id'] ?>/join" method="POST" class="w-full sm:w-auto">
-                    <button type="submit" class="w-full sm:w-auto px-8 py-3.5 bg-primary text-white font-semibold rounded-xl hover:bg-primary-dark transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2">
+                <form action="/events/<?= $event['id'] ?>/join" method="POST" class="w-full sm:w-auto"
+                      data-confirm="Are you sure you want to participate in this event?"
+                      data-confirm-title="Confirm Participation"
+                      data-confirm-btn="Confirm">
+                    <button type="submit" class="w-full sm:w-auto px-8 py-3.5 bg-primary text-white font-semibold rounded-xl hover:bg-primary-dark transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2 cursor-pointer">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
                         Participate Now
                     </button>
@@ -287,7 +266,10 @@
                 </button>
             </div>
             
-            <form action="/events/<?= $event['id'] ?>/donate" method="POST" class="space-y-4">
+            <form action="/events/<?= $event['id'] ?>/donate" method="POST" class="space-y-4"
+                  data-confirm="Are you sure you want to submit this donation?"
+                  data-confirm-title="Confirm Donation"
+                  data-confirm-btn="Confirm">
                 <div>
                     <label for="amount" class="block text-sm font-semibold text-gray-700 mb-1">Amount (Rp) *</label>
                     <input type="number" name="amount" id="amount" min="1000" step="1000" required placeholder="Example: 50000"

@@ -68,8 +68,15 @@ class DashboardController extends Controller
         $allSuggestions = $suggestionModel->getAll();
         $totalSuggestions = count($allSuggestions);
 
-        // Fetch all users
-        $allUsers = $userModel->getAll();
+        // Fetch users for User Tab with filters and pagination
+        $userFilters = [
+            'role' => $_GET['role'] ?? '',
+            'search' => $_GET['search'] ?? '',
+            'major' => $_GET['major'] ?? ''
+        ];
+        $userPage = max(1, (int) ($_GET['page'] ?? 1));
+        $usersPagination = $userModel->getPaginated($userPage, 10, $userFilters);
+
 
         $db = \App\Core\Database::getInstance();
         $eventsData = [];
@@ -88,7 +95,8 @@ class DashboardController extends Controller
 
         // Fetch detailed volunteers list
         $db = \App\Core\Database::getInstance();
-        $volunteers = $db->query("
+        $volunteerEventFilter = $_GET['volunteer_event'] ?? '';
+        $volunteerQuery = "
             SELECT 
                 ep.id,
                 ep.created_at,
@@ -101,8 +109,15 @@ class DashboardController extends Controller
             FROM event_participants ep
             JOIN users u ON ep.user_id = u.id
             JOIN events e ON ep.event_id = e.id
-            ORDER BY ep.created_at DESC
-        ");
+        ";
+        
+        if (!empty($volunteerEventFilter)) {
+            $volunteerQuery .= " WHERE e.id = " . intval($volunteerEventFilter);
+        }
+        
+        $volunteerQuery .= " ORDER BY ep.created_at DESC";
+        
+        $volunteers = $db->query($volunteerQuery);
 
         // Fetch detailed donations list from active event_donations table
         $donations = $db->query("
@@ -130,7 +145,10 @@ class DashboardController extends Controller
         $this->data['totalSuggestions'] = $totalSuggestions;
         $this->data['pendingSuggestions'] = $pendingSuggestions;
         
-        $this->data['allUsers'] = $allUsers;
+        $this->data['usersData'] = $usersPagination;
+        $this->data['userFilters'] = $userFilters;
+        $this->data['volunteerEventFilter'] = $volunteerEventFilter;
+        $this->data['userRoles'] = User::getRoles();
         $this->data['allEvents'] = $eventsData;
         $this->data['allSuggestions'] = $allSuggestions;
         $this->data['volunteers'] = $volunteers;

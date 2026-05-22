@@ -159,32 +159,38 @@ class SuggestionController extends Controller
      */
     public function respond(int $id): void
     {
-        // Require admin or committee
         AuthMiddleware::handleAnyRole(['admin', 'committee']);
+        $isAjax = (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
 
         $suggestion = $this->suggestionModel->getById($id);
 
         if (!$suggestion) {
+            if ($isAjax) { echo json_encode(['success' => false, 'message' => 'Suggestion not found']); return; }
             $this->error404('Suggestion not found');
             return;
         }
 
-        $response = trim($_POST['response'] ?? '');
+        // The JS fetch uses raw JSON body or FormData. Let's handle both.
+        $postData = json_decode(file_get_contents('php://input'), true) ?? $_POST;
+        $response = trim($postData['response'] ?? '');
 
         if (empty($response)) {
+            if ($isAjax) { echo json_encode(['success' => false, 'message' => 'Response cannot be empty.']); return; }
             Session::setFlash('error', 'Response cannot be empty.');
-            $this->redirectTo('/suggestions');
+            $this->redirectTo('/admin/dashboard?tab=suggestions');
             return;
         }
 
         try {
             $this->suggestionModel->addResponse($id, $response);
+            if ($isAjax) { echo json_encode(['success' => true, 'message' => 'Response added successfully.']); return; }
             Session::setFlash('success', 'Response added successfully.');
         } catch (\Exception $e) {
+            if ($isAjax) { echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]); return; }
             Session::setFlash('error', 'Error: ' . $e->getMessage());
         }
 
-        $this->redirectTo('/suggestions');
+        $this->redirectTo('/admin/dashboard?tab=suggestions');
     }
 
     /**
@@ -192,17 +198,19 @@ class SuggestionController extends Controller
      */
     public function implement(int $id): void
     {
-        // Require admin or committee
         AuthMiddleware::handleAnyRole(['admin', 'committee']);
+        $isAjax = (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
 
         try {
             $this->suggestionModel->updateStatus($id, 'implemented');
+            if ($isAjax) { echo json_encode(['success' => true, 'message' => 'Suggestion marked as implemented.']); return; }
             Session::setFlash('success', 'Suggestion marked as implemented.');
         } catch (\Exception $e) {
+            if ($isAjax) { echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]); return; }
             Session::setFlash('error', 'Error: ' . $e->getMessage());
         }
 
-        $this->redirectTo('/suggestions');
+        $this->redirectTo('/admin/dashboard?tab=suggestions');
     }
 
     /**
@@ -210,17 +218,19 @@ class SuggestionController extends Controller
      */
     public function reject(int $id): void
     {
-        // Require admin or committee
         AuthMiddleware::handleAnyRole(['admin', 'committee']);
+        $isAjax = (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
 
         try {
             $this->suggestionModel->updateStatus($id, 'rejected');
+            if ($isAjax) { echo json_encode(['success' => true, 'message' => 'Suggestion rejected.']); return; }
             Session::setFlash('success', 'Suggestion rejected.');
         } catch (\Exception $e) {
+            if ($isAjax) { echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]); return; }
             Session::setFlash('error', 'Error: ' . $e->getMessage());
         }
 
-        $this->redirectTo('/suggestions');
+        $this->redirectTo('/admin/dashboard?tab=suggestions');
     }
 
     /**
@@ -228,17 +238,19 @@ class SuggestionController extends Controller
      */
     public function delete(int $id): void
     {
-        // Require admin only
         AuthMiddleware::handleRole('admin');
+        $isAjax = (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
 
         try {
             $this->suggestionModel->delete($id);
+            if ($isAjax) { echo json_encode(['success' => true, 'message' => 'Suggestion deleted.']); return; }
             Session::setFlash('success', 'Suggestion deleted.');
         } catch (\Exception $e) {
+            if ($isAjax) { echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]); return; }
             Session::setFlash('error', 'Error: ' . $e->getMessage());
         }
 
-        $this->redirectTo('/suggestions');
+        $this->redirectTo('/admin/dashboard?tab=suggestions');
     }
 
     /**

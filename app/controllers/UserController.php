@@ -29,21 +29,8 @@ class UserController extends Controller
         // Require admin role
         AuthMiddleware::handleRole('admin');
 
-        $filters = [
-            'role' => $_GET['role'] ?? '',
-            'search' => $_GET['search'] ?? '',
-            'is_active' => true
-        ];
-
-        $page = max(1, (int) ($_GET['page'] ?? 1));
-        $users = $this->userModel->getPaginated($page, 25, $filters);
-
-        $this->data['title'] = 'User Management - PIC Social Activity';
-        $this->data['users'] = $users;
-        $this->data['filters'] = $filters;
-        $this->data['roles'] = User::getRoles();
-
-        $this->render('admin/users');
+        // Redirect to new admin dashboard users tab
+        $this->redirectTo('/admin/dashboard?tab=users');
     }
 
     /**
@@ -57,7 +44,7 @@ class UserController extends Controller
         $this->data['title'] = 'Create User - PIC Social Activity';
         $this->data['roles'] = User::getRoles();
 
-        $this->render('admin/users/create');
+        $this->render('admin/create');
     }
 
     /**
@@ -73,7 +60,7 @@ class UserController extends Controller
 
         if (!empty($errors)) {
             Session::setFlash('error', implode('<br>', $errors));
-            $this->redirectTo('/admin/users/create');
+            $this->redirectTo('/admin/create');
             return;
         }
 
@@ -82,14 +69,14 @@ class UserController extends Controller
         // Check if email exists
         if ($this->userModel->emailExists($_POST['email'])) {
             Session::setFlash('error', 'Email already exists.');
-            $this->redirectTo('/admin/users/create');
+            $this->redirectTo('/admin/create');
             return;
         }
 
         // Check if NIS exists (only for students)
         if ($role === 'student' && !empty($_POST['nis']) && $this->userModel->nisExists($_POST['nis'])) {
             Session::setFlash('error', 'NIS already exists.');
-            $this->redirectTo('/admin/users/create');
+            $this->redirectTo('/admin/create');
             return;
         }
 
@@ -115,22 +102,23 @@ class UserController extends Controller
                 $this->redirectTo('/admin/dashboard?tab=users');
             } else {
                 Session::setFlash('error', 'Failed to create user.');
-                $this->redirectTo('/admin/users/create');
+                $this->redirectTo('/admin/create');
             }
         } catch (\Exception $e) {
             Session::setFlash('error', 'Error: ' . $e->getMessage());
-            $this->redirectTo('/admin/users/create');
+            $this->redirectTo('/admin/create');
         }
     }
 
     /**
      * Show edit user form (admin only)
      */
-    public function edit(int $id): void
+    public function edit(): void
     {
         // Require admin role
         AuthMiddleware::handleRole('admin');
 
+        $id = (int) ($_GET['id'] ?? 0);
         $user = $this->userModel->getById($id);
 
         if (!$user) {
@@ -142,17 +130,18 @@ class UserController extends Controller
         $this->data['user'] = $user;
         $this->data['roles'] = User::getRoles();
 
-        $this->render('admin/users/edit');
+        $this->render('admin/edit');
     }
 
     /**
      * Update user (admin only)
      */
-    public function update(int $id): void
+    public function update(): void
     {
         // Require admin role
         AuthMiddleware::handleRole('admin');
 
+        $id = (int) ($_POST['id'] ?? 0);
         $user = $this->userModel->getById($id);
 
         if (!$user) {
@@ -165,7 +154,7 @@ class UserController extends Controller
 
         if (!empty($errors)) {
             Session::setFlash('error', implode('<br>', $errors));
-            $this->redirectTo('/admin/users/' . $id . '/edit');
+            $this->redirectTo('/admin/edit?id=' . $id);
             return;
         }
 
@@ -174,14 +163,14 @@ class UserController extends Controller
         // Check if email exists (exclude current user)
         if ($this->userModel->emailExists($_POST['email'], $id)) {
             Session::setFlash('error', 'Email already exists.');
-            $this->redirectTo('/admin/users/' . $id . '/edit');
+            $this->redirectTo('/admin/edit?id=' . $id);
             return;
         }
 
         // Check if NIS exists (exclude current user - only for students)
         if ($role === 'student' && !empty($_POST['nis']) && $this->userModel->nisExists($_POST['nis'], $id)) {
             Session::setFlash('error', 'NIS already exists.');
-            $this->redirectTo('/admin/users/' . $id . '/edit');
+            $this->redirectTo('/admin/edit?id=' . $id);
             return;
         }
 
@@ -210,22 +199,23 @@ class UserController extends Controller
                 $this->redirectTo('/admin/dashboard?tab=users');
             } else {
                 Session::setFlash('error', 'Failed to update user.');
-                $this->redirectTo('/admin/users/' . $id . '/edit');
+                $this->redirectTo('/admin/edit?id=' . $id);
             }
         } catch (\Exception $e) {
             Session::setFlash('error', 'Error: ' . $e->getMessage());
-            $this->redirectTo('/admin/users/' . $id . '/edit');
+            $this->redirectTo('/admin/edit?id=' . $id);
         }
     }
 
     /**
      * Delete user (admin only - soft delete)
      */
-    public function delete(int $id): void
+    public function delete(): void
     {
         // Require admin role
         AuthMiddleware::handleRole('admin');
 
+        $id = (int) ($_POST['id'] ?? 0);
         $user = $this->userModel->getById($id);
 
         if (!$user) {

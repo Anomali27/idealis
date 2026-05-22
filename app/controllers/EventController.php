@@ -293,6 +293,7 @@ class EventController extends Controller
             'description' => trim($_POST['description'] ?? ''),
             'target_donation' => !empty($_POST['target_donation']) ? (float)$_POST['target_donation'] : null,
             'collected_donation' => 0,
+            'created_by' => \App\Core\Session::getUserId(),
         ];
 
         $errors = [];

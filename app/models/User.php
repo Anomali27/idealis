@@ -259,6 +259,11 @@ class User
             $params[] = $search;
         }
 
+        if (!empty($filters['major'])) {
+            $sql .= " AND major LIKE ?";
+            $params[] = "%{$filters['major']}%";
+        }
+
         $sql .= " ORDER BY created_at DESC LIMIT ? OFFSET ?";
         $params[] = $perPage;
         $params[] = $offset;
@@ -280,6 +285,11 @@ class User
             $countParams[] = $search;
             $countParams[] = $search;
             $countParams[] = $search;
+        }
+
+        if (!empty($filters['major'])) {
+            $countSql .= " AND major LIKE ?";
+            $countParams[] = "%{$filters['major']}%";
         }
 
         $totalResult = $this->db->queryOne($countSql, $countParams);

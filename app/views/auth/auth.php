@@ -14,11 +14,11 @@ if (\App\Core\Session::isLoggedIn()) {
 }
 
 // Get flash messages
-$error = \App\Core\Session::getFlash('error');
-$success = \App\Core\Session::getFlash('success');
+$error = $error ?? \App\Core\Session::getFlash('error');
+$success = $success ?? \App\Core\Session::getFlash('success');
 
 // Determine which form to show (login or register)
-$showRegister = $_GET['mode'] ?? 'login';
+$showRegister = $mode ?? $_GET['mode'] ?? 'login';
 ?>
 
 <!DOCTYPE html>

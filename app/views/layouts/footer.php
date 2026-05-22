@@ -73,6 +73,9 @@
     </div>
 </footer>
 
+<!-- Global Modal & Notification System -->
+<?php require_once __DIR__ . '/partials/modal_system.php'; ?>
+
 <!-- Scripts -->
 <script src="/js/script.js"></script>
 </body>

@@ -97,22 +97,23 @@ class AuthController extends Controller
 
 
         if (!empty($errors)) {
-            Session::setFlash('error', implode('<br>', $errors));
-            $this->redirectTo('/auth/auth?mode=login');
+            $this->data['error'] = implode('<br>', $errors);
+            $this->data['mode'] = 'login';
+            $this->data['title'] = 'Login / Register - PIC Social Activity';
+            $this->layout = false;
+            $this->render('auth/auth');
             return;
         }
-
-
-
 
         // Attempt login
         $user = $this->userModel->verifyCredentials($email, $password);
 
-
-
         if ($user === null) {
-            Session::setFlash('error', 'Invalid email or password.');
-            $this->redirectTo('/auth/auth?mode=login');
+            $this->data['error'] = 'Invalid email or password.';
+            $this->data['mode'] = 'login';
+            $this->data['title'] = 'Login / Register - PIC Social Activity';
+            $this->layout = false;
+            $this->render('auth/auth');
             return;
         }
 
@@ -202,8 +203,11 @@ class AuthController extends Controller
         }
 
         if (!empty($errors)) {
-            Session::setFlash('error', implode('<br>', $errors));
-            $this->redirectTo('/auth/auth?mode=register');
+            $this->data['error'] = implode('<br>', $errors);
+            $this->data['mode'] = 'register';
+            $this->data['title'] = 'Login / Register - PIC Social Activity';
+            $this->layout = false;
+            $this->render('auth/auth');
             return;
         }
 
@@ -225,14 +229,20 @@ class AuthController extends Controller
 
             if ($userId > 0) {
                 Session::setFlash('success', 'Registration successful! Please login.');
-                $this->redirectTo('/auth/auth?mode=login');
+                $this->redirectTo('/auth/login?mode=login');
             } else {
-                Session::setFlash('error', 'Registration failed. Please try again.');
-                $this->redirectTo('/auth/auth?mode=register');
+                $this->data['error'] = 'Registration failed. Please try again.';
+                $this->data['mode'] = 'register';
+                $this->data['title'] = 'Login / Register - PIC Social Activity';
+                $this->layout = false;
+                $this->render('auth/auth');
             }
         } catch (\Exception $e) {
-            Session::setFlash('error', 'An error occurred: ' . $e->getMessage());
-            $this->redirectTo('/auth/auth?mode=register');
+            $this->data['error'] = 'An error occurred: ' . $e->getMessage();
+            $this->data['mode'] = 'register';
+            $this->data['title'] = 'Login / Register - PIC Social Activity';
+            $this->layout = false;
+            $this->render('auth/auth');
         }
     }
 

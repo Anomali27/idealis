@@ -95,13 +95,12 @@ $router->add('POST', '/api/users/{id}/role', 'UserController', 'updateRole');
 // =====================================================
 // SUGGESTION ROUTES
 // =====================================================
-$router->add('GET', '/suggestions', 'SuggestionController', 'index');
 $router->add('GET', '/suggestion', 'SuggestionController', 'create');
 $router->add('POST', '/suggestions/store', 'SuggestionController', 'store');
 $router->add('GET', '/suggestions/{id}', 'SuggestionController', 'show');
 $router->add('POST', '/suggestions/{id}/respond', 'SuggestionController', 'respond');
-$router->add('GET', '/suggestions/{id}/implement', 'SuggestionController', 'implement');
-$router->add('GET', '/suggestions/{id}/reject', 'SuggestionController', 'reject');
+$router->add('POST', '/suggestions/{id}/implement', 'SuggestionController', 'implement');
+$router->add('POST', '/suggestions/{id}/reject', 'SuggestionController', 'reject');
 $router->add('POST', '/suggestions/{id}/delete', 'SuggestionController', 'delete');
 
 // =====================================================
@@ -110,11 +109,11 @@ $router->add('POST', '/suggestions/{id}/delete', 'SuggestionController', 'delete
 $router->add('GET', '/admin', 'DashboardController', 'admin');
 $router->add('GET', '/admin/dashboard', 'DashboardController', 'admin');
 $router->add('GET', '/admin/users', 'UserController', 'index');
-$router->add('GET', '/admin/users/create', 'UserController', 'create');
-$router->add('POST', '/admin/users/store', 'UserController', 'store');
-$router->add('GET', '/admin/users/{id}/edit', 'UserController', 'edit');
-$router->add('POST', '/admin/users/{id}/update', 'UserController', 'update');
-$router->add('POST', '/admin/users/{id}/delete', 'UserController', 'delete');
+$router->add('GET', '/admin/create', 'UserController', 'create');
+$router->add('POST', '/admin/store', 'UserController', 'store');
+$router->add('GET', '/admin/edit', 'UserController', 'edit');
+$router->add('POST', '/admin/update', 'UserController', 'update');
+$router->add('POST', '/admin/delete', 'UserController', 'delete');
 
 // =====================================================
 // COMMITTEE ROUTES
@@ -130,7 +129,6 @@ $router->add('GET', '/dashboard', 'DashboardController', 'index');
 // =====================================================
 // API ROUTES (Optional - for AJAX)
 // =====================================================
-$router->add('GET', '/api/activities', 'ActivityController', 'apiIndex');
 $router->add('GET', '/api/volunteers/{activity_id}', 'VolunteerController', 'apiByActivity');
 
 // Run the router

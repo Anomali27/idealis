@@ -1,7 +1,7 @@
 <?php // app/views/admin/users/edit.php ?>
 <?php use App\Core\Session; ?>
-<?php require_once dirname(dirname(__DIR__)) . '/layouts/header.php'; ?>
-<?php require_once dirname(dirname(__DIR__)) . '/layouts/navbar.php'; ?>
+<?php require_once dirname(__DIR__) . '/layouts/header.php'; ?>
+<?php require_once dirname(__DIR__) . '/layouts/navbar.php'; ?>
 
 <section class="pt-28 pb-16 bg-gray-50 min-h-screen font-poppins">
     <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -46,7 +46,8 @@
 
         <!-- Form Card -->
         <div class="bg-white rounded-3xl p-8 border border-gray-100 shadow-xl">
-            <form action="/admin/users/<?= $user['id'] ?>/update" method="POST" class="space-y-6">
+            <form action="/admin/update" method="POST" class="space-y-6">
+                <input type="hidden" name="id" value="<?= $user['id'] ?>">
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Full Name -->
@@ -198,4 +199,4 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<?php require_once dirname(dirname(__DIR__)) . '/layouts/footer.php'; ?>
+<?php require_once dirname(__DIR__) . '/layouts/footer.php'; ?>

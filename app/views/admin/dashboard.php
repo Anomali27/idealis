@@ -267,7 +267,10 @@ $donations = $donations ?? [];
                                         </a>
                                         
                                         <!-- Delete -->
-                                        <form action="/events/<?= $event['id'] ?>/delete" method="POST" class="flex-1 inline-block" onsubmit="return confirm('Are you sure you want to permanently delete event \'<?= htmlspecialchars($event['name']) ?>\'?')">
+                                        <form action="/events/<?= $event['id'] ?>/delete" method="POST" class="flex-1 inline-block"
+                                              data-confirm="Are you sure you want to permanently delete event '<?= htmlspecialchars($event['name']) ?>'?"
+                                              data-confirm-title="Delete Event"
+                                              data-confirm-btn="Delete Event">
                                             <button type="submit" class="w-full px-3 py-2 bg-white border border-slate-200 hover:border-red-500 text-slate-500 hover:text-red-600 text-xs font-bold rounded-xl transition-all shadow-sm flex items-center justify-center gap-1.5 text-center cursor-pointer">
                                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -290,12 +293,28 @@ $donations = $donations ?? [];
                                 <h3 class="text-xl font-bold text-gray-900 font-poppins">Users Directory</h3>
                                 <p class="text-xs text-slate-500 mt-0.5 font-crimson text-base">Filter, audit, and manage roles for students, teachers, committee members, and administrator accounts.</p>
                             </div>
-                            <div class="flex items-center gap-2">
-                                <a href="/admin/users/create" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2.5 rounded-xl text-xs font-bold font-poppins transition-all shadow-md">
+                            <!-- Search & Filter -->
+                            <div class="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto mt-4 sm:mt-0">
+                                <form method="GET" action="/admin/dashboard" class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                                    <input type="hidden" name="tab" value="users">
+                                    <input type="text" name="search" value="<?= htmlspecialchars($userFilters['search'] ?? '') ?>" placeholder="Search name, email, NIS..."
+                                           class="px-4 py-2 rounded-xl border border-slate-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none text-xs font-poppins sm:min-w-[180px]">
+                                    <select name="role" class="px-4 py-2 rounded-xl border border-slate-200 focus:border-primary outline-none text-xs font-poppins bg-white">
+                                        <option value="">All Roles</option>
+                                        <?php foreach ($userRoles ?? [] as $key => $label): ?>
+                                        <option value="<?= $key ?>" <?= ($userFilters['role'] ?? '') === $key ? 'selected' : '' ?>><?= $label ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                    <select name="major" class="px-4 py-2 rounded-xl border border-slate-200 focus:border-primary outline-none text-xs font-poppins bg-white sm:max-w-[120px]">
+                                        <option value="">All Majors</option>
+                                        <option value="AKL" <?= ($userFilters['major'] ?? '') === 'AKL' ? 'selected' : '' ?>>AKL</option>
+                                        <option value="BDP" <?= ($userFilters['major'] ?? '') === 'BDP' ? 'selected' : '' ?>>BDP</option>
+                                        <option value="TKJ" <?= ($userFilters['major'] ?? '') === 'TKJ' ? 'selected' : '' ?>>TKJ</option>
+                                    </select>
+                                    <button type="submit" class="px-4 py-2 bg-slate-100 text-slate-600 hover:bg-slate-200 rounded-xl font-bold text-xs transition-all font-poppins">Filter</button>
+                                </form>
+                                <a href="/admin/create" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-xs font-bold font-poppins transition-all shadow-md whitespace-nowrap">
                                     + Create User
-                                </a>
-                                <a href="/admin/users" class="bg-primary hover:bg-primary-light text-white px-4 py-2.5 rounded-xl text-xs font-bold font-poppins transition-all shadow-md">
-                                    Open Full Manager
                                 </a>
                             </div>
                         </div>
@@ -303,17 +322,23 @@ $donations = $donations ?? [];
                             <table class="w-full text-left border-collapse whitespace-nowrap">
                                 <thead>
                                     <tr class="bg-slate-50/50 text-[10px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 font-poppins">
-                                        <th class="px-8 py-4">Account Name</th>
-                                        <th class="px-6 py-4">Email Address</th>
-                                        <th class="px-6 py-4">Account Role</th>
-                                        <th class="px-6 py-4">NIS / Class Details</th>
-                                        <th class="px-6 py-4">Account Status</th>
-                                        <th class="px-6 py-4">Registration Date</th>
-                                        <th class="px-8 py-4 text-right">Actions</th>
+                                        <th class="px-6 py-4">Name</th>
+                                        <th class="px-6 py-4">Class</th>
+                                        <th class="px-6 py-4">Email</th>
+                                        <th class="px-6 py-4">NIS</th>
+                                        <th class="px-6 py-4">Phone Number</th>
+                                        <th class="px-6 py-4">Major</th>
+                                        <th class="px-6 py-4">Roles</th>
+                                        <th class="px-6 py-4 text-right">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-slate-100 text-sm text-slate-600 font-poppins">
-                                    <?php foreach ($allUsers as $user): ?>
+                                    <?php if (empty($usersData['data'])): ?>
+                                        <tr>
+                                            <td colspan="7" class="px-8 py-12 text-center text-slate-400 font-crimson text-lg">No users found.</td>
+                                        </tr>
+                                    <?php else: ?>
+                                    <?php foreach ($usersData['data'] as $user): ?>
                                         <?php 
                                             $role = strtolower($user['role'] ?? 'student');
                                             $roleClass = 'bg-blue-50 text-blue-600 border-blue-100';
@@ -325,7 +350,7 @@ $donations = $donations ?? [];
                                             $statusClass = $isActive ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600';
                                         ?>
                                         <tr class="hover:bg-slate-50/50 transition-colors">
-                                            <td class="px-8 py-4 font-bold text-slate-900">
+                                            <td class="px-6 py-4 font-bold text-slate-900">
                                                 <div class="flex items-center gap-3">
                                                     <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center font-bold text-primary font-poppins shrink-0">
                                                         <?= strtoupper(substr($user['name'] ?? 'U', 0, 1)) ?>
@@ -333,35 +358,35 @@ $donations = $donations ?? [];
                                                     <span class="font-poppins"><?= htmlspecialchars($user['name']) ?></span>
                                                 </div>
                                             </td>
+                                            <td class="px-6 py-4 text-xs font-semibold text-slate-700 font-poppins"><?= $user['class'] ? htmlspecialchars($user['class']) : '-' ?></td>
                                             <td class="px-6 py-4 text-xs font-semibold text-slate-500 font-poppins"><?= htmlspecialchars($user['email']) ?></td>
+                                            <td class="px-6 py-4 text-xs font-semibold text-slate-700 font-poppins"><?= $user['nis'] ? htmlspecialchars($user['nis']) : '-' ?></td>
+                                            <td class="px-6 py-4 text-xs font-semibold text-slate-500 font-poppins"><?= $user['phone'] ? htmlspecialchars($user['phone']) : '-' ?></td>
+                                            <td class="px-6 py-4 text-xs font-semibold text-slate-700 font-poppins"><?= $user['major'] ? htmlspecialchars($user['major']) : '-' ?></td>
                                             <td class="px-6 py-4">
-                                                <span class="px-2 py-0.5 text-[10px] font-bold border rounded uppercase tracking-wider font-poppins <?= $roleClass ?>">
-                                                    <?= htmlspecialchars($user['role']) ?>
-                                                </span>
+                                                <select onchange="confirmRoleChange(<?= $user['id'] ?>, '<?= addslashes(htmlspecialchars($user['name'])) ?>', '<?= $user['role'] ?>', this.value, this)"
+                                                        class="role-select px-2 py-1 rounded border text-[10px] font-bold uppercase tracking-wider outline-none cursor-pointer transition-all font-poppins <?= $roleClass ?>">
+                                                    <option value="student" <?= $user['role'] === 'student' ? 'selected' : '' ?>>Student</option>
+                                                    <option value="committee" <?= $user['role'] === 'committee' ? 'selected' : '' ?>>Committee</option>
+                                                    <option value="teacher" <?= $user['role'] === 'teacher' ? 'selected' : '' ?>>Teacher</option>
+                                                    <option value="admin" <?= $user['role'] === 'admin' ? 'selected' : '' ?>>Admin</option>
+                                                </select>
                                             </td>
-                                            <td class="px-6 py-4 text-xs font-semibold text-slate-700 font-poppins">
-                                                <?= $user['nis'] ? htmlspecialchars($user['nis']) : '-' ?> 
-                                                <span class="text-[10px] text-slate-400 font-normal block font-crimson"><?= $user['class'] ? htmlspecialchars($user['class']) : '' ?></span>
-                                            </td>
-                                            <td class="px-6 py-4">
-                                                <span class="px-2 py-0.5 text-[10px] font-extrabold rounded uppercase tracking-wider font-poppins <?= $statusClass ?>">
-                                                    <?= $isActive ? 'Active' : 'Inactive' ?>
-                                                </span>
-                                            </td>
-                                            <td class="px-6 py-4 text-xs text-slate-400 font-poppins">
-                                                <?= date('d M Y', strtotime($user['created_at'])) ?>
-                                            </td>
-                                            <td class="px-8 py-4 text-right">
+                                            <td class="px-6 py-4 text-right">
                                                 <div class="flex items-center justify-end gap-2">
                                                     <!-- Edit Action -->
-                                                    <a href="/admin/users/<?= $user['id'] ?>/edit" class="p-1.5 border border-slate-200 hover:border-amber-500 text-slate-500 hover:text-amber-600 rounded-lg transition-all bg-white" title="Edit User">
+                                                    <a href="/admin/edit?id=<?= $user['id'] ?>" class="p-1.5 border border-slate-200 hover:border-amber-500 text-slate-500 hover:text-amber-600 rounded-lg transition-all bg-white" title="Edit User">
                                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                                         </svg>
                                                     </a>
                                                     <!-- Delete Action -->
                                                     <?php if ($user['id'] !== Session::getUserId()): ?>
-                                                        <form action="/admin/users/<?= $user['id'] ?>/delete" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete user \'<?= htmlspecialchars($user['name']) ?>\'?')">
+                                                        <form action="/admin/delete" method="POST" class="inline" 
+                                                              data-confirm="Are you sure you want to permanently delete user '<?= htmlspecialchars($user['name']) ?>'?"
+                                                              data-confirm-title="Delete User"
+                                                              data-confirm-btn="Delete User">
+                                                            <input type="hidden" name="id" value="<?= $user['id'] ?>">
                                                             <button type="submit" class="p-1.5 border border-slate-200 hover:border-red-500 text-slate-500 hover:text-red-600 rounded-lg transition-all bg-white cursor-pointer" title="Delete User">
                                                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -373,9 +398,25 @@ $donations = $donations ?? [];
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
+                                    <?php endif; ?>
                                 </tbody>
                             </table>
                         </div>
+                        
+                        <!-- Pagination -->
+                        <?php if (($usersData['totalPages'] ?? 1) > 1): ?>
+                        <div class="px-8 py-4 border-t border-slate-100 flex items-center justify-between font-poppins">
+                            <p class="text-xs text-slate-500">Showing page <?= $usersData['page'] ?> of <?= $usersData['totalPages'] ?> (<?= $usersData['total'] ?> total)</p>
+                            <div class="flex gap-1">
+                                <?php for ($p = 1; $p <= $usersData['totalPages']; $p++): ?>
+                                <a href="/admin/dashboard?tab=users&page=<?= $p ?>&role=<?= urlencode($userFilters['role'] ?? '') ?>&search=<?= urlencode($userFilters['search'] ?? '') ?>&major=<?= urlencode($userFilters['major'] ?? '') ?>"
+                                   class="px-3 py-1.5 rounded-lg text-xs font-bold <?= $p === $usersData['page'] ? 'bg-primary text-white shadow-md' : 'bg-slate-50 text-slate-600 hover:bg-slate-200' ?> transition-all">
+                                    <?= $p ?>
+                                </a>
+                                <?php endfor; ?>
+                            </div>
+                        </div>
+                        <?php endif; ?>
                     </div>
                 </section>
 
@@ -530,7 +571,7 @@ $donations = $donations ?? [];
 
                                     <!-- Interactive response expand form -->
                                     <div id="respond-form-<?= $suggestion['id'] ?>" class="hidden border-t border-gray-100 pt-4 mt-2 animate-fadeIn font-poppins">
-                                        <form action="/suggestions/<?= $suggestion['id'] ?>/respond" method="POST" class="space-y-3">
+                                        <form action="/suggestions/<?= $suggestion['id'] ?>/respond" method="POST" class="space-y-3" onsubmit="submitSuggestionResponse(event, this, <?= $suggestion['id'] ?>)">
                                             <div>
                                                 <label class="block text-xs font-semibold text-gray-700 mb-1">Write Response</label>
                                                 <textarea name="response" rows="3" required placeholder="Type your response to the volunteer suggestion..."
@@ -553,14 +594,17 @@ $donations = $donations ?? [];
                                             <button onclick="toggleResponseForm(<?= $suggestion['id'] ?>)" class="px-3 py-2 bg-primary/10 hover:bg-primary/20 text-primary font-bold text-[10px] md:text-xs uppercase tracking-wider rounded-xl transition-all flex-1 text-center font-poppins">
                                                 💬 Respond
                                             </button>
-                                            <a href="/suggestions/<?= $suggestion['id'] ?>/implement" class="px-3 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-100 font-bold text-[10px] md:text-xs uppercase tracking-wider rounded-xl transition-all flex-1 text-center font-poppins" onclick="return confirm('Mark this suggestion as implemented?')">
+                                            <button type="button" onclick="confirmSuggestionAction(<?= $suggestion['id'] ?>, 'implement')" class="px-3 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-100 font-bold text-[10px] md:text-xs uppercase tracking-wider rounded-xl transition-all flex-1 text-center font-poppins cursor-pointer">
                                                 ✅ Implement
-                                            </a>
-                                            <a href="/suggestions/<?= $suggestion['id'] ?>/reject" class="px-3 py-2 bg-red-50 hover:bg-red-100 text-red-600 border border-red-100 font-bold text-[10px] md:text-xs uppercase tracking-wider rounded-xl transition-all flex-1 text-center font-poppins" onclick="return confirm('Reject this suggestion?')">
+                                            </button>
+                                            <button type="button" onclick="confirmSuggestionAction(<?= $suggestion['id'] ?>, 'reject')" class="px-3 py-2 bg-red-50 hover:bg-red-100 text-red-600 border border-red-100 font-bold text-[10px] md:text-xs uppercase tracking-wider rounded-xl transition-all flex-1 text-center font-poppins cursor-pointer">
                                                 ❌ Reject
-                                            </a>
+                                            </button>
                                         <?php endif; ?>
-                                        <form action="/suggestions/<?= $suggestion['id'] ?>/delete" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to permanently delete this suggestion?')">
+                                        <form action="/suggestions/<?= $suggestion['id'] ?>/delete" method="POST" class="inline"
+                                              data-confirm="Are you sure you want to permanently delete this suggestion?"
+                                              data-confirm-title="Delete Suggestion"
+                                              data-confirm-btn="Delete Suggestion">
                                             <button type="submit" class="p-2 bg-gray-50 hover:bg-red-50 text-gray-400 hover:text-red-600 rounded-xl transition-all cursor-pointer" title="Delete Suggestion">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                                             </button>
@@ -721,9 +765,23 @@ $donations = $donations ?? [];
                 <!-- VOLUNTEERS SECTION (TABULAR VIEW) -->
                 <section id="volunteers" class="section-content hidden animate-fadeIn">
                     <div class="bg-white rounded-3xl shadow-lg border border-slate-100 overflow-hidden font-poppins">
-                        <div class="px-8 py-6 border-b border-slate-100">
-                            <h3 class="text-xl font-bold text-gray-900 font-poppins">Volunteer Registrations Log</h3>
-                            <p class="text-xs text-slate-500 mt-0.5 font-crimson text-base">Track, coordinate, and review student and teacher registrations for school social activities.</p>
+                        <div class="px-8 py-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-900 font-poppins">Volunteer Registrations Log</h3>
+                                <p class="text-xs text-slate-500 mt-0.5 font-crimson text-base">Track, coordinate, and review student and teacher registrations for school social activities.</p>
+                            </div>
+                            <!-- Volunteer Filter -->
+                            <form action="/admin/dashboard" method="GET" class="flex items-center gap-2">
+                                <input type="hidden" name="tab" value="volunteers">
+                                <select name="volunteer_event" onchange="this.form.submit()" class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 outline-none focus:border-primary transition-all font-poppins">
+                                    <option value="">All Events</option>
+                                    <?php foreach ($allEvents as $ev): ?>
+                                        <option value="<?= $ev['id'] ?>" <?= (isset($volunteerEventFilter) && $volunteerEventFilter == $ev['id']) ? 'selected' : '' ?>>
+                                            <?= htmlspecialchars($ev['name']) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </form>
                         </div>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left border-collapse whitespace-nowrap">
@@ -786,6 +844,124 @@ $donations = $donations ?? [];
         </div>
     </div>
 </div>
+
+<script>
+let pendingChange = null;
+
+function confirmRoleChange(userId, userName, oldRole, newRole, selectEl) {
+    if (oldRole === newRole) return;
+
+    pendingChange = { userId, userName, oldRole, newRole, selectEl };
+
+    const roleLabels = { student: 'Student', admin: 'Admin', teacher: 'Teacher', committee: 'Committee' };
+    const message = `Change <strong>${userName}</strong>'s role from <strong>${roleLabels[oldRole] || oldRole}</strong> to <strong>${roleLabels[newRole] || newRole}</strong>?`;
+    
+    showConfirmModal('Confirm Role Change', message, executeRoleChange, 'warning', 'Confirm');
+}
+
+function executeRoleChange() {
+    if (!pendingChange) return;
+
+    showActionModal('loading', 'Saving role change...');
+
+    fetch(`/api/users/${pendingChange.userId}/role`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+        body: JSON.stringify({ role: pendingChange.newRole })
+    })
+    .then(r => r.json())
+    .then(data => {
+        closeActionModal();
+        if (data.success) {
+            showToast(data.message, 'success');
+            updateSelectStyle(pendingChange.selectEl, pendingChange.newRole);
+            pendingChange.oldRole = pendingChange.newRole;
+        } else {
+            showToast(data.message, 'error');
+            pendingChange.selectEl.value = pendingChange.oldRole;
+        }
+        pendingChange = null;
+    })
+    .catch(() => {
+        closeActionModal();
+        showToast('Network error. Please try again.', 'error');
+        if (pendingChange) {
+            pendingChange.selectEl.value = pendingChange.oldRole;
+            pendingChange = null;
+        }
+    });
+}
+
+function updateSelectStyle(el, role) {
+    el.className = 'role-select px-2 py-1 rounded border text-[10px] font-bold uppercase tracking-wider outline-none cursor-pointer transition-all font-poppins ';
+    if (role === 'admin') el.className += 'bg-red-50 text-red-600 border-red-100';
+    else if (role === 'teacher') el.className += 'bg-indigo-50 text-indigo-600 border-indigo-100';
+    else if (role === 'committee') el.className += 'bg-amber-50 text-amber-600 border-amber-100';
+    else el.className += 'bg-blue-50 text-blue-600 border-blue-100';
+}
+
+// Suggestion JS Functions
+function toggleResponseForm(id) {
+    const form = document.getElementById('respond-form-' + id);
+    if (form) {
+        form.classList.toggle('hidden');
+    }
+}
+
+function submitSuggestionResponse(e, form, id) {
+    e.preventDefault();
+    const responseText = form.querySelector('textarea[name="response"]').value;
+    
+    showActionModal('loading', 'Submitting response...');
+    
+    fetch('/suggestions/' + id + '/respond', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+        body: JSON.stringify({ response: responseText })
+    })
+    .then(r => r.json())
+    .then(data => {
+        closeActionModal();
+        if (data.success) {
+            showToast(data.message, 'success');
+            setTimeout(() => window.location.reload(), 1500);
+        } else {
+            showToast(data.message, 'error');
+        }
+    })
+    .catch(() => {
+        closeActionModal();
+        showToast('Network error.', 'error');
+    });
+}
+
+function confirmSuggestionAction(id, action) {
+    const title = action === 'implement' ? 'Implement Suggestion' : 'Reject Suggestion';
+    const message = action === 'implement' ? 'Are you sure you want to mark this suggestion as implemented?' : 'Are you sure you want to reject this suggestion?';
+    
+    showConfirmModal(title, message, () => {
+        showActionModal('loading', 'Processing...');
+        fetch('/suggestions/' + id + '/' + action, {
+            method: 'POST',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(r => r.json())
+        .then(data => {
+            closeActionModal();
+            if (data.success) {
+                showToast(data.message, 'success');
+                setTimeout(() => window.location.reload(), 1500);
+            } else {
+                showToast(data.message, 'error');
+            }
+        })
+        .catch(() => {
+            closeActionModal();
+            showToast('Network error.', 'error');
+        });
+    }, 'warning', 'Confirm');
+}
+</script>
 
 <script>
     function showSection(section) {
