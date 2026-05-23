@@ -1,6 +1,6 @@
 <div align="center">
   <!-- You can replace this placeholder with your actual project logo -->
-  <img src="https://via.placeholder.com/150?text=Idealis+Logo" alt="Project Logo" width="120" height="120">
+  <img src="public/assets/images/logo/logo-white.png" alt="Project Logo" width="120" height="120">
   
   # 🌟 Manajemen Relawan dan Kegiatan Sosial Siswa 🌟
   *(Student Volunteer & Social Activity Management System)*
@@ -28,14 +28,12 @@
 - [Technology Stack](#-technology-stack)
 - [Architecture & Database](#-architecture--database)
 - [Folder Structure](#-folder-structure)
-- [Screenshots](#-screenshots)
 - [Installation & Setup](#-installation--setup)
 - [Usage Instructions](#-usage-instructions)
 - [Application Flow & Roles](#-application-flow--roles)
 - [Future Improvements & Scalability](#-future-improvements--scalability)
 - [Security Considerations](#-security-considerations)
 - [Contributors](#-contributors)
-- [License](#-license)
 
 ---
 
@@ -111,32 +109,32 @@ The database is structured to handle users, events, and the relationships betwee
 
 ```text
 idealis/
+├── .gitignore
+├── README.md             # Project documentation
 ├── app/
+│   ├── config/           # Configuration files
 │   ├── controllers/      # PHP classes handling business logic & routing
+│   ├── core/             # Application core (Router, DB, Controller base)
+│   ├── middleware/       # Route middlewares (Auth)
 │   ├── models/           # Database interaction classes
 │   └── views/            # UI templates (HTML/PHP mix)
+│       ├── admin/
+│       ├── auth/
+│       ├── donations/
+│       ├── events/
+│       ├── history/
+│       ├── landing/
 │       ├── layouts/      # Reusable UI components (header, footer, modals)
-│       └── ...
-├── config/               # Configuration files (Database connections, constants)
-├── public/               # Publicly accessible files
-│   ├── css/              # Custom CSS and Tailwind outputs
-│   ├── js/               # Client-side JavaScript & AJAX handlers
-│   └── images/           # Static assets and uploads
-├── README.md             # Project documentation
-└── index.php             # Application entry point / Front Controller
+│       ├── news/
+│       ├── profile/
+│       ├── suggestions/
+│       └── volunteers/
+└── public/               # Publicly accessible files
+    ├── index.php         # Application entry point / Front Controller
+    ├── assets/           # Static assets (fonts, images)
+    ├── css/              # Custom CSS outputs
+    └── js/               # Client-side JavaScript & AJAX handlers
 ```
-
----
-
-## 📸 Screenshots
-
-| Dashboard Overview | Event Details |
-| :---: | :---: |
-| <img src="https://via.placeholder.com/500x300.png?text=Dashboard+Screenshot" alt="Dashboard"> | <img src="https://via.placeholder.com/500x300.png?text=Event+Details+Screenshot" alt="Event Details"> |
-| **Volunteer Registration** | **User Profile & History** |
-| <img src="https://via.placeholder.com/500x300.png?text=Registration+Screenshot" alt="Registration Form"> | <img src="https://via.placeholder.com/500x300.png?text=Profile+Screenshot" alt="User Profile"> |
-
-*(Note: Replace the placeholder image URLs above with actual paths to your project screenshots, e.g., `/public/images/screenshots/dashboard.png`)*
 
 ---
 
@@ -210,12 +208,6 @@ To further enhance the system, the following features are considered for future 
 - **[Your Name/Username]** - *Lead Developer* - [Your GitHub Profile](https://github.com/yourusername)
 
 Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/yourusername/idealis/issues).
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
 
 <div align="center">
   <br>
