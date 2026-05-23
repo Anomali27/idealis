@@ -28,8 +28,8 @@ $showRegister = $mode ?? $_GET['mode'] ?? 'login';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $showRegister === 'register' ? 'Register' : 'Login' ?> - Pontianak International College</title>
     
-    <!-- Google Fonts - Landing Page Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Kameron:wght@400;700&family=Kanit:wght@400;600&family=Crimson+Pro:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Fonts -->
+    <link rel="stylesheet" href="/assets/fonts/fonts.css">
     
     <link rel="stylesheet" href="/css/style.css">
     

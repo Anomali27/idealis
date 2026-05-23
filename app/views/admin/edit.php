@@ -17,7 +17,8 @@
             </a>
             <h1 class="text-3xl md:text-4xl font-bold text-gray-900 font-poppins">Edit User Account</h1>
             <p class="text-gray-500 mt-2">Modify role or update profile details for
-                <?= htmlspecialchars($user['name'] ?? '') ?>.</p>
+                <?= htmlspecialchars($user['name'] ?? '') ?>.
+            </p>
         </div>
 
         <!-- Flash Messages -->
@@ -97,12 +98,14 @@
                 <div id="student-fields"
                     class="grid grid-cols-1 md:grid-cols-3 gap-6 p-5 bg-slate-50 rounded-2xl border border-slate-100 transition-all">
                     <div>
-                        <label for="nis" class="block text-xs font-bold text-gray-600 uppercase mb-2">NIS (Student Number)</label>
+                        <label for="nis" class="block text-xs font-bold text-gray-600 uppercase mb-2">NIS (Student
+                            Number)</label>
                         <input type="text" name="nis" id="nis" value="<?= htmlspecialchars($user['nis'] ?? '') ?>"
                             class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 bg-white outline-none transition-all text-gray-900 font-medium">
                     </div>
                     <div>
-                        <label for="class" class="block text-xs font-bold text-gray-600 uppercase mb-2">Class Details</label>
+                        <label for="class" class="block text-xs font-bold text-gray-600 uppercase mb-2">Class
+                            Details</label>
                         <input type="text" name="class" id="class" value="<?= htmlspecialchars($user['class'] ?? '') ?>"
                             class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 bg-white outline-none transition-all text-gray-900 font-medium">
                     </div>
@@ -110,7 +113,7 @@
                         <label for="major" class="block text-xs font-bold text-gray-600 uppercase mb-2">Major /
                             Department</label>
                         <input type="text" name="major" id="major" value="<?= htmlspecialchars($user['major'] ?? '') ?>"
-                            placeholder="e.g. Software Eng."
+                            placeholder="e.g. TKJ"
                             class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 bg-white outline-none transition-all text-gray-900 font-medium">
                     </div>
                 </div>
@@ -129,7 +132,8 @@
                             *</label>
                         <select name="is_active" id="is_active"
                             class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all text-gray-900 font-medium">
-                            <option value="1" <?= (int) ($user['is_active'] ?? 1) === 1 ? 'selected' : '' ?>>Active</option>
+                            <option value="1" <?= (int) ($user['is_active'] ?? 1) === 1 ? 'selected' : '' ?>>Active
+                            </option>
                             <option value="0" <?= (int) ($user['is_active'] ?? 1) === 0 ? 'selected' : '' ?>>Inactive
                             </option>
                         </select>
@@ -156,47 +160,47 @@
 </section>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const roleSelect = document.getElementById('role');
-    const studentFields = document.getElementById('student-fields');
+    document.addEventListener('DOMContentLoaded', function () {
+        const roleSelect = document.getElementById('role');
+        const studentFields = document.getElementById('student-fields');
 
-    if (!roleSelect || !studentFields) return;
+        if (!roleSelect || !studentFields) return;
 
-    function toggleStudentFields() {
+        function toggleStudentFields() {
+            if (roleSelect.value === 'student') {
+                studentFields.style.display = 'grid';
+                // Trigger reflow to let CSS transitions work
+                studentFields.offsetHeight;
+                studentFields.style.opacity = '1';
+                studentFields.style.transform = 'translateY(0)';
+            } else {
+                studentFields.style.opacity = '0';
+                studentFields.style.transform = 'translateY(-10px)';
+                // Hide after the animation finishes
+                setTimeout(() => {
+                    if (roleSelect.value !== 'student') {
+                        studentFields.style.display = 'none';
+                    }
+                }, 300);
+            }
+        }
+
+        // Set dynamic animation properties
+        studentFields.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+
+        // Set initial state
         if (roleSelect.value === 'student') {
             studentFields.style.display = 'grid';
-            // Trigger reflow to let CSS transitions work
-            studentFields.offsetHeight;
             studentFields.style.opacity = '1';
             studentFields.style.transform = 'translateY(0)';
         } else {
+            studentFields.style.display = 'none';
             studentFields.style.opacity = '0';
             studentFields.style.transform = 'translateY(-10px)';
-            // Hide after the animation finishes
-            setTimeout(() => {
-                if (roleSelect.value !== 'student') {
-                    studentFields.style.display = 'none';
-                }
-            }, 300);
         }
-    }
 
-    // Set dynamic animation properties
-    studentFields.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-
-    // Set initial state
-    if (roleSelect.value === 'student') {
-        studentFields.style.display = 'grid';
-        studentFields.style.opacity = '1';
-        studentFields.style.transform = 'translateY(0)';
-    } else {
-        studentFields.style.display = 'none';
-        studentFields.style.opacity = '0';
-        studentFields.style.transform = 'translateY(-10px)';
-    }
-
-    roleSelect.addEventListener('change', toggleStudentFields);
-});
+        roleSelect.addEventListener('change', toggleStudentFields);
+    });
 </script>
 
 <?php require_once dirname(__DIR__) . '/layouts/footer.php'; ?>
